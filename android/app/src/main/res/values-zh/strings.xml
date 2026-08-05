@@ -1,0 +1,62 @@
+
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Lucky VPN Master</string>
+    
+    <!-- Navigation -->
+    <string name="nav_home">首页</string>
+    <string name="nav_servers">服务器</string>
+    <string name="nav_rewards">奖励</string>
+    <string name="nav_profile">个人资料</string>
+    
+    <!-- Auth -->
+    <string name="login">登录</string>
+    <string name="register">注册</string>
+    <string name="email">邮箱</string>
+    <string name="password">密码</string>
+    <string name="name">姓名</string>
+    <string name="confirm_password">确认密码</string>
+    <string name="referral_code">推荐码（可选）</string>
+    <string name="forgot_password">忘记密码？</string>
+    <string name="dont_have_account">没有账户？</string>
+    <string name="already_have_account">已有账户？</string>
+    <string name="sign_up">注册</string>
+    <string name="sign_in">登录</string>
+    
+    <!-- VPN Connection -->
+    <string name="connected">已连接</string>
+    <string name="disconnected">已断开</string>
+    <string name="connecting">连接中</string>
+    <string name="connect">连接</string>
+    <string name="disconnect">断开</string>
+    
+    <!-- Servers -->
+    <string name="free_servers">免费服务器</string>
+    <string name="premium_servers">高级服务器</string>
+    <string name="server_load">负载: %1$d%%</string>
+    <string name="server_ping">延迟: %1$s</string>
+    
+    <!-- Rewards -->
+    <string name="daily_checkin">每日签到</string>
+    <string name="watch_ad">观看视频</string>
+    <string name="lucky_wheel">幸运转盘</string>
+    <string name="points">%1$d 积分</string>
+    
+    <!-- Profile -->
+    <string name="upgrade_to_premium">升级到高级版</string>
+    <string name="support">支持</string>
+    <string name="logout">登出</string>
+    <string name="current_plan">当前计划: %1$s</string>
+    
+    <!-- Subscription -->
+    <string name="monthly_plan">月度计划</string>
+    <string name="quarterly_plan">季度计划</string>
+    <string name="yearly_plan">年度计划</string>
+    <string name="subscribe">订阅</string>
+    <string name="price_format">%1$.0f %2$s</string>
+    
+    <!-- Common -->
+    <string name="loading">加载中...</string>
+    <string name="error_network">网络错误，请重试。</string>
+    <string name="error_general">出现问题，请重试。</string>
+</resources>

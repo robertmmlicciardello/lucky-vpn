@@ -1,0 +1,71 @@
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp">
+
+    <!-- Loading Animation Container -->
+    <FrameLayout
+        android:id="@+id/loading_container"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/iv_loading_animation"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/loading_vpn_animation"
+            android:contentDescription="@string/loading_connection" />
+
+    </FrameLayout>
+
+    <!-- Connection Status Icon -->
+    <ImageView
+        android:id="@+id/iv_connection_status"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/ic_shield_off"
+        android:contentDescription="@string/connection_status" />
+
+    <!-- Status Text -->
+    <TextView
+        android:id="@+id/tv_connection_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/disconnected"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/error"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Status Description -->
+    <TextView
+        android:id="@+id/tv_status_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tap_to_connect"
+        android:textSize="14sp"
+        android:textColor="@color/text_secondary"
+        android:gravity="center"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Server Info -->
+    <TextView
+        android:id="@+id/tv_server_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/select_server"
+        android:textSize="14sp"
+        android:textColor="@color/text_secondary"
+        android:drawableStart="@drawable/ic_location"
+        android:drawablePadding="8dp"
+        android:gravity="center_vertical" />
+
+</LinearLayout>

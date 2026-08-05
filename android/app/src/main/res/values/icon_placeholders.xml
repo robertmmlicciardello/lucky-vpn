@@ -1,0 +1,14 @@
+
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Placeholder resource IDs for icons that need to be added -->
+    <!-- These should be replaced with actual drawable icons -->
+    <integer name="ic_vpn_logo">@android:drawable/ic_dialog_info</integer>
+    <integer name="ic_shield_check">@android:drawable/ic_dialog_info</integer>
+    <integer name="ic_shield_off">@android:drawable/ic_dialog_alert</integer>
+    <integer name="ic_vpn">@android:drawable/ic_dialog_info</integer>
+    <integer name="ic_flag_default">@android:drawable/ic_menu_mapmode</integer>
+    <integer name="ic_signal_strong">@android:drawable/ic_dialog_info</integer>
+    <integer name="ic_signal_medium">@android:drawable/ic_dialog_alert</integer>
+    <integer name="ic_signal_weak">@android:drawable/ic_dialog_alert</integer>
+</resources>

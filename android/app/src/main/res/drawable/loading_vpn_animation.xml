@@ -1,0 +1,84 @@
+
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android">
+    <aapt:attr name="android:drawable">
+        <vector
+            android:width="100dp"
+            android:height="100dp"
+            android:viewportWidth="100"
+            android:viewportHeight="100">
+            
+            <!-- Outer ring -->
+            <path
+                android:name="outerRing"
+                android:pathData="M50,10 A40,40 0 1,1 49.99,10"
+                android:strokeWidth="3"
+                android:strokeColor="@color/primary"
+                android:fillColor="android:color/transparent"
+                android:strokeLineCap="round" />
+            
+            <!-- Inner shield -->
+            <path
+                android:name="shield"
+                android:pathData="M50,25 L35,35 L35,55 Q35,65 50,75 Q65,65 65,55 L65,35 Z"
+                android:fillColor="@color/primary"
+                android:alpha="0.8" />
+            
+            <!-- Connection dots -->
+            <circle
+                android:name="dot1"
+                android:cx="30"
+                android:cy="50"
+                android:r="2"
+                android:fillColor="@color/secondary" />
+            
+            <circle
+                android:name="dot2"
+                android:cx="70"
+                android:cy="50"
+                android:r="2"
+                android:fillColor="@color/secondary" />
+                
+        </vector>
+    </aapt:attr>
+    
+    <!-- Rotation animation for outer ring -->
+    <target android:name="outerRing">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:propertyName="rotation"
+                android:duration="2000"
+                android:valueFrom="0"
+                android:valueTo="360"
+                android:repeatCount="infinite"
+                android:interpolator="@android:interpolator/linear" />
+        </aapt:attr>
+    </target>
+    
+    <!-- Pulse animation for dots -->
+    <target android:name="dot1">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:propertyName="alpha"
+                android:duration="1000"
+                android:valueFrom="0.3"
+                android:valueTo="1.0"
+                android:repeatCount="infinite"
+                android:repeatMode="reverse"
+                android:interpolator="@android:interpolator/accelerate_decelerate" />
+        </aapt:attr>
+    </target>
+    
+    <target android:name="dot2">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:propertyName="alpha"
+                android:duration="1000"
+                android:valueFrom="1.0"
+                android:valueTo="0.3"
+                android:repeatCount="infinite"
+                android:repeatMode="reverse"
+                android:interpolator="@android:interpolator/accelerate_decelerate" />
+        </aapt:attr>
+    </target>
+</animated-vector>

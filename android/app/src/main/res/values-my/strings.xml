@@ -1,0 +1,62 @@
+
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Lucky VPN Master</string>
+    
+    <!-- Navigation -->
+    <string name="nav_home">ပင်မ</string>
+    <string name="nav_servers">ဆာဗာများ</string>
+    <string name="nav_rewards">ဆုများ</string>
+    <string name="nav_profile">ပရိုဖိုင်</string>
+    
+    <!-- Auth -->
+    <string name="login">လော့ဂ်အင်</string>
+    <string name="register">မှတ်ပုံတင်ရန်</string>
+    <string name="email">အီးမေးလ်</string>
+    <string name="password">လျှို့ဝှက်စကားဝှက်</string>
+    <string name="name">အမည်</string>
+    <string name="confirm_password">စကားဝှက် အတည်ပြုရန်</string>
+    <string name="referral_code">မိတ်ဆက်ကုဒ် (မဖြစ်မနေမလို)</string>
+    <string name="forgot_password">စကားဝှက် မေ့သွားပါသလား?</string>
+    <string name="dont_have_account">အကောင့်မရှိပါသလား?</string>
+    <string name="already_have_account">အကောင့်ရှိပြီးသားလား?</string>
+    <string name="sign_up">အကောင့်ဖွင့်ရန်</string>
+    <string name="sign_in">ဝင်ရောက်ရန်</string>
+    
+    <!-- VPN Connection -->
+    <string name="connected">ချိတ်ဆက်ပြီး</string>
+    <string name="disconnected">ချိတ်ဆက်မှုပြတ်</string>
+    <string name="connecting">ချိတ်ဆက်နေ</string>
+    <string name="connect">ချိတ်ဆက်ရန်</string>
+    <string name="disconnect">ချိတ်ဆက်မှုဖြုတ်ရန်</string>
+    
+    <!-- Servers -->
+    <string name="free_servers">အခမဲ့ဆာဗာများ</string>
+    <string name="premium_servers">ပရီမီယံဆာဗာများ</string>
+    <string name="server_load">ဝန်: %1$d%%</string>
+    <string name="server_ping">ပင်: %1$s</string>
+    
+    <!-- Rewards -->
+    <string name="daily_checkin">နေ့စဉ် စစ်ဆေးခြင်း</string>
+    <string name="watch_ad">ဗီဒီယို ကြည့်ရန်</string>
+    <string name="lucky_wheel">ကံကောင်း ဘီး</string>
+    <string name="points">%1$d မှတ်</string>
+    
+    <!-- Profile -->
+    <string name="upgrade_to_premium">ပရီမီယံသို့ အဆင့်မြှင့်ရန်</string>
+    <string name="support">အကူအညီ</string>
+    <string name="logout">ထွက်ရန်</string>
+    <string name="current_plan">လက်ရှိအစီအစဉ်: %1$s</string>
+    
+    <!-- Subscription -->
+    <string name="monthly_plan">လစဉ်အစီအစဉ်</string>
+    <string name="quarterly_plan">သုံးလစဉ်အစီအစဉ်</string>
+    <string name="yearly_plan">နှစ်စဉ်အစီအစဉ်</string>
+    <string name="subscribe">စာရင်းသွင်းရန်</string>
+    <string name="price_format">%1$.0f %2$s</string>
+    
+    <!-- Common -->
+    <string name="loading">စောင့်ပါ...</string>
+    <string name="error_network">ကွန်ယက် အမှားအယွင်း။ ထပ်ကြိုးစားပါ။</string>
+    <string name="error_general">တစ်ခုခု မှားယွင်းနေသည်။ ထပ်ကြိုးစားပါ။</string>
+</resources>

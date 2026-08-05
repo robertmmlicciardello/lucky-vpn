@@ -1,0 +1,62 @@
+
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Lucky VPN Master</string>
+    
+    <!-- Navigation -->
+    <string name="nav_home">Inicio</string>
+    <string name="nav_servers">Servidores</string>
+    <string name="nav_rewards">Recompensas</string>
+    <string name="nav_profile">Perfil</string>
+    
+    <!-- Auth -->
+    <string name="login">Iniciar Sesión</string>
+    <string name="register">Registrarse</string>
+    <string name="email">Correo</string>
+    <string name="password">Contraseña</string>
+    <string name="name">Nombre</string>
+    <string name="confirm_password">Confirmar Contraseña</string>
+    <string name="referral_code">Código de Referencia (Opcional)</string>
+    <string name="forgot_password">¿Olvidó su contraseña?</string>
+    <string name="dont_have_account">¿No tiene cuenta?</string>
+    <string name="already_have_account">¿Ya tiene cuenta?</string>
+    <string name="sign_up">Registrarse</string>
+    <string name="sign_in">Iniciar Sesión</string>
+    
+    <!-- VPN Connection -->
+    <string name="connected">CONECTADO</string>
+    <string name="disconnected">DESCONECTADO</string>
+    <string name="connecting">CONECTANDO</string>
+    <string name="connect">CONECTAR</string>
+    <string name="disconnect">DESCONECTAR</string>
+    
+    <!-- Servers -->
+    <string name="free_servers">Servidores Gratuitos</string>
+    <string name="premium_servers">Servidores Premium</string>
+    <string name="server_load">Carga: %1$d%%</string>
+    <string name="server_ping">Ping: %1$s</string>
+    
+    <!-- Rewards -->
+    <string name="daily_checkin">Check-in Diario</string>
+    <string name="watch_ad">Ver Video</string>
+    <string name="lucky_wheel">Rueda de la Suerte</string>
+    <string name="points">%1$d Puntos</string>
+    
+    <!-- Profile -->
+    <string name="upgrade_to_premium">Actualizar a Premium</string>
+    <string name="support">Soporte</string>
+    <string name="logout">Cerrar Sesión</string>
+    <string name="current_plan">Plan Actual: %1$s</string>
+    
+    <!-- Subscription -->
+    <string name="monthly_plan">Plan Mensual</string>
+    <string name="quarterly_plan">Plan Trimestral</string>
+    <string name="yearly_plan">Plan Anual</string>
+    <string name="subscribe">Suscribirse</string>
+    <string name="price_format">%1$.0f %2$s</string>
+    
+    <!-- Common -->
+    <string name="loading">Cargando...</string>
+    <string name="error_network">Error de red. Inténtalo de nuevo.</string>
+    <string name="error_general">Algo salió mal. Inténtalo de nuevo.</string>
+</resources>

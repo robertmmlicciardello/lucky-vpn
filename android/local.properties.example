@@ -1,0 +1,41 @@
+
+# This file contains sensitive configuration values for the Android app
+# Copy this file to local.properties and fill in your actual values
+# DO NOT commit local.properties to version control
+
+# SDK location (adjust path as needed)
+sdk.dir=/path/to/Android/Sdk
+
+# AdMob Configuration
+ADMOB_APP_ID="ca-app-pub-XXXXXXXXXXXXXXXX~XXXXXXXXXX"
+ADMOB_BANNER_ID="ca-app-pub-XXXXXXXXXXXXXXXX/XXXXXXXXXX"
+ADMOB_INTERSTITIAL_ID="ca-app-pub-XXXXXXXXXXXXXXXX/XXXXXXXXXX"
+ADMOB_REWARDED_ID="ca-app-pub-XXXXXXXXXXXXXXXX/XXXXXXXXXX"
+
+# Facebook Ads
+FACEBOOK_APP_ID="XXXXXXXXXXXXXXXX"
+
+# Unity Ads
+UNITY_GAME_ID="XXXXXXX"
+
+# AppLovin
+APPLOVIN_SDK_KEY="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+
+# StartApp
+STARTAPP_APP_ID="XXXXXXXXX"
+
+# API Configuration
+API_BASE_URL="https://your-api-domain.com/api/v1"
+SOCKET_URL="https://your-api-domain.com"
+
+# OneConnect API (if using third-party VPN service)
+ONECONNECT_API_KEY="your-oneconnect-api-key"
+
+# App Signing (for release builds)
+STORE_FILE=path/to/your/keystore.jks
+STORE_PASSWORD=your_keystore_password
+KEY_ALIAS=your_key_alias
+KEY_PASSWORD=your_key_password
+
+# Firebase (will be configured via google-services.json)
+# No need to add Firebase keys here as they come from google-services.json
