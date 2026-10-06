@@ -129,15 +129,18 @@ function parseVpnGateCsv(text) {
 async function syncToDb(db, servers) {
   const { Server, sequelize } = db;
 
-  // Make sure the provider ENUM accepts 'vpngate' on existing databases.
+  // Make sure the provider ENUM accepts 'vpngate' on existing MySQL databases.
   // (sequelize.sync() without alter:true will not change the column.)
-  try {
-    await sequelize.query(
-      "ALTER TABLE `Servers` MODIFY `provider` ENUM('manual','oneconnect','vpngate') NOT NULL DEFAULT 'manual'"
-    );
-  } catch (e) {
-    // ER_DUP_FIELDNAME / syntax variants on already-migrated DBs — safe to ignore
-    if (!/1060|1064|duplicate/i.test(e.message)) throw e;
+  // Skipped on SQLite, where Sequelize creates the column fresh from the model.
+  if (sequelize.getDialect() === 'mysql') {
+    try {
+      await sequelize.query(
+        "ALTER TABLE `Servers` MODIFY `provider` ENUM('manual','oneconnect','vpngate') NOT NULL DEFAULT 'manual'"
+      );
+    } catch (e) {
+      // ER_DUP_FIELDNAME / syntax variants on already-migrated DBs — safe to ignore
+      if (!/1060|1064|duplicate/i.test(e.message)) throw e;
+    }
   }
 
   const seen = new Set();

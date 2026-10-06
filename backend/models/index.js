@@ -2,23 +2,36 @@
 const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
-const sequelize = new Sequelize(
-  process.env.DB_NAME || 'lucky_vpn_master',
-  process.env.DB_USER || 'root',
-  process.env.DB_PASSWORD || '',
-  {
-    host: process.env.DB_HOST || 'localhost',
-    port: process.env.DB_PORT || 3306,
-    dialect: 'mysql',
+// DB_DIALECT: 'mysql' (default, e.g. TiDB Cloud) or 'sqlite' (zero-config,
+// used for free test deploys where the DB file is ephemeral).
+const dialect = (process.env.DB_DIALECT || 'mysql').toLowerCase();
+
+let sequelize;
+if (dialect === 'sqlite') {
+  sequelize = new Sequelize({
+    dialect: 'sqlite',
+    storage: process.env.DB_STORAGE || '/tmp/lucky-vpn.sqlite',
     logging: process.env.NODE_ENV === 'development' ? console.log : false,
-    pool: {
-      max: 5,
-      min: 0,
-      acquire: 30000,
-      idle: 10000
+  });
+} else {
+  sequelize = new Sequelize(
+    process.env.DB_NAME || 'lucky_vpn_master',
+    process.env.DB_USER || 'root',
+    process.env.DB_PASSWORD || '',
+    {
+      host: process.env.DB_HOST || 'localhost',
+      port: process.env.DB_PORT || 3306,
+      dialect: 'mysql',
+      logging: process.env.NODE_ENV === 'development' ? console.log : false,
+      pool: {
+        max: 5,
+        min: 0,
+        acquire: 30000,
+        idle: 10000
+      }
     }
-  }
-);
+  );
+}
 
 // Import all models
 const User = require('./User')(sequelize, Sequelize.DataTypes);

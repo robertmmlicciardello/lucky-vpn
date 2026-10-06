@@ -11,16 +11,21 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      # DB_DIALECT: 'sqlite' = zero-config file DB (test deploys; data resets
+      # when the free instance sleeps). Set to 'mysql' + the DB_* vars below
+      # for a persistent database (e.g. TiDB Cloud).
+      - key: DB_DIALECT
+        value: sqlite
       - key: DB_PORT
         value: 4000
       - key: DB_HOST
-        sync: false # TiDB Cloud host, e.g. xxx.tidbcloud.com
+        sync: false # TiDB Cloud host, e.g. xxx.tidbcloud.com (mysql only)
       - key: DB_NAME
         value: test
       - key: DB_USER
-        sync: false
+        sync: false # (mysql only)
       - key: DB_PASSWORD
-        sync: false
+        sync: false # (mysql only)
       - key: JWT_SECRET
         generateValue: true # Render generates a random secret
       - key: ADMIN_EMAIL
