@@ -44,7 +44,7 @@ function parseCsv(text) {
   return rows;
 }
 
-function fetchText(url, timeoutMs = 30000) {
+function fetchText(url, timeoutMs = 15000) {
   const lib = url.startsWith('https') ? https : http;
   return new Promise((resolve, reject) => {
     const req = lib.get(url, { headers: { 'User-Agent': 'lucky-vpn-sync/1.0' }, timeout: timeoutMs }, (res) => {
