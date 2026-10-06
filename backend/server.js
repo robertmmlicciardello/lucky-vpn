@@ -175,6 +175,30 @@ process.on('unhandledRejection', (err) => {
 // Database sync and server start
 let server;
 db.sequelize.sync({ force: false }).then(() => {
+  // Scheduled VPNGate free-server sync (every 6h). Disable with SYNC_CRON=off.
+  if (process.env.SYNC_CRON !== 'off') {
+    try {
+      const cron = require('node-cron');
+      const { fetchVpnGateCsv, parseVpnGateCsv, syncToDb } = require('./jobs/sync-vpngate');
+      const runSync = async () => {
+        try {
+          const servers = parseVpnGateCsv(await fetchVpnGateCsv());
+          const r = await syncToDb(db, servers);
+          logger.info('VPNGate scheduled sync done', r);
+        } catch (e) {
+          logger.error('VPNGate scheduled sync failed: ' + e.message);
+        }
+      };
+      db.Server.count({ where: { provider: 'vpngate', status: 'online' } })
+        .then((c) => { if (c === 0) runSync(); })
+        .catch((e) => logger.error('sync check failed: ' + e.message));
+      cron.schedule('0 */6 * * *', runSync);
+      logger.info('VPNGate auto-sync scheduled (every 6h)');
+    } catch (e) {
+      logger.error('Could not schedule VPNGate sync: ' + e.message);
+    }
+  }
+
   server = app.listen(PORT, () => {
     logger.info(`🚀 Monetize VPN Server started successfully`);
     logger.info(`📊 Server running on port ${PORT}`);
