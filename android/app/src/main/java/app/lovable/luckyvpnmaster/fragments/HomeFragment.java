@@ -16,7 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import app.lovable.luckyvpnmaster.R;
-import app.lovable.luckyvpnmaster.OptimizedVPNService;
+import app.lovable.luckyvpnmaster.vpn.OpenVpnConnector;
 import app.lovable.luckyvpnmaster.auth.AuthManager;
 import app.lovable.luckyvpnmaster.models.User;
 import app.lovable.luckyvpnmaster.models.Server;
@@ -37,6 +37,31 @@ public class HomeFragment extends Fragment implements ConnectionManager.NetworkC
     private LinearLayout connectionStatusLayout;
     private ConnectionManager connectionManager;
     private VPNConnectionReceiver vpnReceiver;
+    private final OpenVpnConnector.StatusListener vpnStatusListener =
+            new OpenVpnConnector.StatusListener() {
+        @Override
+        public void onState(String state, String message) {
+            if (getActivity() == null) return;
+            getActivity().runOnUiThread(() -> {
+                Boolean connected = OpenVpnConnector.toConnected(state);
+                if (connected != null) {
+                    updateConnectionStatus(connected);
+                } else if (tvConnectionStatus != null && message != null && !message.isEmpty()) {
+                    tvConnectionStatus.setText(state);
+                }
+            });
+        }
+
+        @Override
+        public void onError(String error) {
+            if (getActivity() == null) return;
+            getActivity().runOnUiThread(() -> {
+                updateConnectionStatus(false);
+                android.widget.Toast.makeText(getContext(), error,
+                        android.widget.Toast.LENGTH_LONG).show();
+            });
+        }
+    };
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -130,44 +155,76 @@ public class HomeFragment extends Fragment implements ConnectionManager.NetworkC
             loadBestServer();
             return;
         }
-        
+
         if (!connectionManager.isNetworkAvailable()) {
             showOfflineState();
             return;
         }
-        
+
+        // Real VPN goes through "OpenVPN for Android" (de.blinkt.openvpn).
+        if (getActivity() != null
+                && !OpenVpnConnector.isClientInstalled(getActivity())) {
+            promptInstallOpenVpnClient();
+            return;
+        }
+
         showLoadingState();
-        
-        Intent intent = new Intent(getContext(), OptimizedVPNService.class);
-        intent.putExtra("server_ip", currentServer.ip);
-        intent.putExtra("server_port", currentServer.port);
-        intent.putExtra("server_config", currentServer.configFile);
-        
-        getContext().startService(intent);
-        
-        // Simulate connection delay
-        new android.os.Handler().postDelayed(() -> {
-            if (getActivity() != null) {
-                getActivity().runOnUiThread(() -> updateConnectionStatus(true));
+
+        // Download the inline .ovpn config for this server, then connect.
+        serverManager.getServerConfig(currentServer.id, new ServerManager.ConfigCallback() {
+            @Override
+            public void onSuccess(String ovpnConfig) {
+                if (getActivity() == null) return;
+                getActivity().runOnUiThread(() ->
+                        OpenVpnConnector.getInstance().connect(
+                                getActivity(), ovpnConfig, vpnStatusListener));
             }
-        }, 3000);
+
+            @Override
+            public void onError(String error) {
+                if (getActivity() == null) return;
+                getActivity().runOnUiThread(() -> {
+                    showConnectionState();
+                    android.widget.Toast.makeText(getContext(), error,
+                            android.widget.Toast.LENGTH_LONG).show();
+                });
+            }
+        });
     }
-    
+
     private void disconnectVPN() {
         showLoadingState();
-        
-        Intent intent = new Intent(getContext(), OptimizedVPNService.class);
-        intent.putExtra("action", "disconnect");
-        getContext().startService(intent);
-        
-        // Simulate disconnection delay
+        OpenVpnConnector.getInstance().disconnect();
+        // The OpenVPN status callback confirms the real state; update
+        // optimistically as well so the UI never hangs on "loading".
         new android.os.Handler().postDelayed(() -> {
             if (getActivity() != null) {
-                getActivity().runOnUiThread(() -> updateConnectionStatus(false));
+                getActivity().runOnUiThread(() -> {
+                    if (!isConnected) showConnectionState();
+                    updateConnectionStatus(false);
+                });
             }
         }, 1500);
     }
-    
+
+    private void promptInstallOpenVpnClient() {
+        if (getActivity() == null) return;
+        new androidx.appcompat.app.AlertDialog.Builder(getActivity())
+                .setTitle("OpenVPN client needed")
+                .setMessage("To connect for real, please install the free " +
+                        "\"OpenVPN for Android\" app. Lucky VPN will then " +
+                        "connect through it automatically.")
+                .setPositiveButton("Install", (d, w) ->
+                        OpenVpnConnector.openPlayStore(getActivity()))
+                .setNegativeButton("Later", null)
+                .show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        OpenVpnConnector.getInstance().onActivityResult(requestCode, resultCode);
+    }
     private void showLoadingState() {
         if (loadingContainer != null && connectionStatusLayout != null && offlineLayout != null) {
             loadingContainer.setVisibility(View.VISIBLE);
@@ -291,6 +348,10 @@ public class HomeFragment extends Fragment implements ConnectionManager.NetworkC
         
         if (vpnReceiver != null) {
             getContext().unregisterReceiver(vpnReceiver);
+        }
+
+        if (getContext() != null) {
+            OpenVpnConnector.getInstance().release(getContext());
         }
     }
 }

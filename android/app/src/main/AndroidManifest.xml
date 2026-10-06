@@ -1,10 +1,9 @@
-
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="app.lovable.luckyvpnmaster">
 
-    <!-- VPN Permissions -->
-    <uses-permission android:name="android.permission.BIND_VPN_SERVICE" />
+    <!-- VPN Permissions (connection is handled by the OpenVPN for Android app
+         via its external API; this app does not host its own VpnService) -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -54,16 +53,6 @@
             android:name=".PaymentActivity"
             android:exported="false"
             android:theme="@style/AppTheme.NoActionBar" />
-
-        <!-- VPN Service -->
-        <service
-            android:name=".VPNService"
-            android:permission="android.permission.BIND_VPN_SERVICE"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.net.VpnService" />
-            </intent-filter>
-        </service>
 
         <!-- AdMob App ID -->
         <meta-data

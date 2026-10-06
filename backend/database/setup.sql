@@ -50,7 +50,7 @@ CREATE TABLE Servers (
   status ENUM('online', 'offline', 'maintenance') DEFAULT 'online',
   load_percentage INT DEFAULT 0,
   users_count INT DEFAULT 0,
-  provider ENUM('manual', 'oneconnect') DEFAULT 'manual',
+  provider ENUM('manual', 'oneconnect', 'vpngate') DEFAULT 'manual',
   oneconnect_id VARCHAR(255),
   config_file TEXT,
   last_sync DATETIME,

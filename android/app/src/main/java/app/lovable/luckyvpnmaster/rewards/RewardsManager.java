@@ -59,8 +59,7 @@ public class RewardsManager {
         }).start();
     }
 
-    public void watchAdReward(RewardCallback callback) {
-        new Thread(() -> {
+    public void watchAdReward(RewardCallback callback) {        new Thread(() -> {
             try {
                 URL url = new URL(APIConfig.API_BASE_URL + APIConfig.WATCH_AD_ENDPOINT);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -88,6 +87,47 @@ public class RewardsManager {
 
             } catch (Exception e) {
                 Log.e("RewardsManager", "Error with ad reward", e);
+                callback.onError("Network error");
+            }
+        }).start();
+    }
+
+    /** Generic points grant (e.g. rewarded video). Posts to the ad-reward endpoint. */
+    public void addPoints(int points, String reason, RewardCallback callback) {
+        new Thread(() -> {
+            try {
+                URL url = new URL(APIConfig.API_BASE_URL + APIConfig.WATCH_AD_ENDPOINT);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setRequestProperty("Authorization", "Bearer " + authManager.getAccessToken());
+                conn.setDoOutput(true);
+
+                JSONObject body = new JSONObject();
+                body.put("points", points);
+                body.put("reason", reason);
+                byte[] bytes = body.toString().getBytes("UTF-8");
+                conn.getOutputStream().write(bytes);
+                conn.getOutputStream().close();
+
+                int responseCode = conn.getResponseCode();
+                BufferedReader br = new BufferedReader(new InputStreamReader(
+                    responseCode >= 200 && responseCode < 300 ? conn.getInputStream() : conn.getErrorStream()));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = br.readLine()) != null) {
+                    response.append(line);
+                }
+                br.close();
+
+                JSONObject responseJson = new JSONObject(response.toString());
+                if (responseCode == 200 && responseJson.getBoolean("success")) {
+                    callback.onSuccess(responseJson.optInt("points", points));
+                } else {
+                    callback.onError(responseJson.optString("message", "Reward failed"));
+                }
+            } catch (Exception e) {
+                Log.e("RewardsManager", "Error adding points", e);
                 callback.onError("Network error");
             }
         }).start();

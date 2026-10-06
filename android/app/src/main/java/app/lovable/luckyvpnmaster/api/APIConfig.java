@@ -15,4 +15,6 @@ public class APIConfig {
     public static final String WATCH_AD_ENDPOINT = "/rewards/watch-ad";
     public static final String SUBMIT_PAYMENT_ENDPOINT = "/payments/submit";
     public static final String PAYMENT_ACCOUNTS_ENDPOINT = "/payments/accounts";
+    // Download the inline .ovpn config for one server: GET /servers/{id}/config
+    public static final String SERVER_CONFIG_TEMPLATE = "/servers/%d/config";
 }

@@ -74,4 +74,28 @@ public class PaymentManager {
             }
         }).start();
     }
+
+    /** Open the payment screen for a subscription plan. */
+    public void initiatePayment(String planId, String paymentMethod, double amount) {
+        Intent intent = new Intent(context, PaymentActivity.class);
+        intent.putExtra("plan_id", planId);
+        intent.putExtra("payment_method", paymentMethod);
+        intent.putExtra("account_number", "");
+        intent.putExtra("account_name", "");
+        intent.putExtra("amount", amount);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+
+    /** Submit a manual payment proof (transaction ID entered by the user). */
+    public void submitPaymentProof(String planId, String paymentMethod, String transactionId) {
+        submitPayment(transactionId, 0, paymentMethod, planId, 0, new PaymentCallback() {
+            @Override public void onSuccess(String message) {
+                Log.d("PaymentManager", "proof submitted: " + message);
+            }
+            @Override public void onError(String error) {
+                Log.e("PaymentManager", "proof failed: " + error);
+            }
+        });
+    }
 }

@@ -1,6 +1,6 @@
-
 <?xml version="1.0" encoding="utf-8"?>
-<animated-vector xmlns:android="http://schemas.android.com/apk/res/android">
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
     <aapt:attr name="android:drawable">
         <vector
             android:width="100dp"
@@ -14,7 +14,7 @@
                 android:pathData="M50,10 A40,40 0 1,1 49.99,10"
                 android:strokeWidth="3"
                 android:strokeColor="@color/primary"
-                android:fillColor="android:color/transparent"
+                android:fillColor="@android:color/transparent"
                 android:strokeLineCap="round" />
             
             <!-- Inner shield -->
@@ -25,19 +25,15 @@
                 android:alpha="0.8" />
             
             <!-- Connection dots -->
-            <circle
+            <path
                 android:name="dot1"
-                android:cx="30"
-                android:cy="50"
-                android:r="2"
-                android:fillColor="@color/secondary" />
+                android:pathData="M28,50 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0"
+                android:fillColor="@color/accent" />
             
-            <circle
+            <path
                 android:name="dot2"
-                android:cx="70"
-                android:cy="50"
-                android:r="2"
-                android:fillColor="@color/secondary" />
+                android:pathData="M68,50 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0"
+                android:fillColor="@color/accent" />
                 
         </vector>
     </aapt:attr>

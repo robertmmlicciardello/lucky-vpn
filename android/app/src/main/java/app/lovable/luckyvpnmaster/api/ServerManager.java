@@ -28,6 +28,11 @@ public class ServerManager {
         void onError(String error);
     }
 
+    public interface ConfigCallback {
+        void onSuccess(String ovpnConfig);
+        void onError(String error);
+    }
+
     public interface ServersCallback {
         void onSuccess(List<Server> servers);
         void onError(String error);
@@ -114,6 +119,40 @@ public class ServerManager {
 
             } catch (Exception e) {
                 Log.e("ServerManager", "Error getting servers", e);
+                callback.onError("Network error");
+            }
+        }).start();
+    }
+
+    /** Download the inline .ovpn config for a server (GET /servers/{id}/config). */
+    public void getServerConfig(int serverId, ConfigCallback callback) {
+        new Thread(() -> {
+            try {
+                String endpoint = String.format(APIConfig.SERVER_CONFIG_TEMPLATE, serverId);
+                URL url = new URL(APIConfig.API_BASE_URL + endpoint);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestProperty("Authorization", "Bearer " + authManager.getAccessToken());
+
+                int responseCode = conn.getResponseCode();
+                BufferedReader br = new BufferedReader(new InputStreamReader(
+                    responseCode >= 200 && responseCode < 300 ? conn.getInputStream() : conn.getErrorStream()));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = br.readLine()) != null) {
+                    response.append(line);
+                }
+                br.close();
+
+                JSONObject responseJson = new JSONObject(response.toString());
+                if (responseCode == 200 && responseJson.getBoolean("success")) {
+                    String config = responseJson.getJSONObject("data").optString("config_file", "");
+                    if (!config.isEmpty()) callback.onSuccess(config);
+                    else callback.onError("No VPN config for this server");
+                } else {
+                    callback.onError("Failed to load VPN config");
+                }
+            } catch (Exception e) {
+                Log.e("ServerManager", "Error getting server config", e);
                 callback.onError("Network error");
             }
         }).start();
