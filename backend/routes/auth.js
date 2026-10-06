@@ -233,8 +233,14 @@ router.post('/admin/login', [
 
   const { email, password } = req.body;
 
-  // For demo purposes - in production, use proper admin user system
-  if (email === 'admin@monetizevpn.com' && password === 'admin123') {
+  // Admin credentials come from env vars (never hardcoded).
+  const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+  if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
+    throw new AppError('Admin login is not configured', 500);
+  }
+
+  if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
     const token = jwt.sign(
       { id: 1, email: email, role: 'admin' },
       process.env.JWT_SECRET,
