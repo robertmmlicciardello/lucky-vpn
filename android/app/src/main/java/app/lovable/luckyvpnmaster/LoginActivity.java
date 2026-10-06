@@ -18,6 +18,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText etEmail, etPassword;
     private Button btnLogin;
     private TextView tvRegister, tvForgotPassword;
+    private Button btnGuest;
     private ProgressBar progressBar;
     private AuthManager authManager;
 
@@ -27,6 +28,14 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         authManager = new AuthManager(this);
+
+        // Returning users and guests skip the login screen
+        if (authManager.isLoggedIn() || authManager.isGuest()) {
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+            return;
+        }
+
         initViews();
         setupClickListeners();
     }
@@ -35,6 +44,7 @@ public class LoginActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.et_email);
         etPassword = findViewById(R.id.et_password);
         btnLogin = findViewById(R.id.btn_login);
+        btnGuest = findViewById(R.id.btn_guest);
         tvRegister = findViewById(R.id.tv_register);
         tvForgotPassword = findViewById(R.id.tv_forgot_password);
         progressBar = findViewById(R.id.progress_bar);
@@ -48,6 +58,11 @@ public class LoginActivity extends AppCompatActivity {
         tvForgotPassword.setOnClickListener(v -> {
             // Implement forgot password
             Toast.makeText(this, "Feature coming soon!", Toast.LENGTH_SHORT).show();
+        });
+        btnGuest.setOnClickListener(v -> {
+            authManager.setGuestMode(true);
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
         });
     }
 

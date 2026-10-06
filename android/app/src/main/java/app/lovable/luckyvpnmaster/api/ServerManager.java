@@ -51,7 +51,10 @@ public class ServerManager {
             try {
                 URL url = new URL(APIConfig.API_BASE_URL + APIConfig.FREE_SERVERS_ENDPOINT);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestProperty("Authorization", "Bearer " + authManager.getAccessToken());
+                String token = authManager.getAccessToken();
+                if (token != null && !token.isEmpty()) {
+                    conn.setRequestProperty("Authorization", "Bearer " + token);
+                }
 
                 int responseCode = conn.getResponseCode();
                 BufferedReader br = new BufferedReader(new InputStreamReader(
@@ -89,7 +92,10 @@ public class ServerManager {
             try {
                 URL url = new URL(APIConfig.API_BASE_URL + endpoint);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestProperty("Authorization", "Bearer " + authManager.getAccessToken());
+                String token = authManager.getAccessToken();
+                if (token != null && !token.isEmpty()) {
+                    conn.setRequestProperty("Authorization", "Bearer " + token);
+                }
 
                 int responseCode = conn.getResponseCode();
                 BufferedReader br = new BufferedReader(new InputStreamReader(
@@ -131,7 +137,10 @@ public class ServerManager {
                 String endpoint = String.format(APIConfig.SERVER_CONFIG_TEMPLATE, serverId);
                 URL url = new URL(APIConfig.API_BASE_URL + endpoint);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestProperty("Authorization", "Bearer " + authManager.getAccessToken());
+                String token = authManager.getAccessToken();
+                if (token != null && !token.isEmpty()) {
+                    conn.setRequestProperty("Authorization", "Bearer " + token);
+                }
 
                 int responseCode = conn.getResponseCode();
                 BufferedReader br = new BufferedReader(new InputStreamReader(

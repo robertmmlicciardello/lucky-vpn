@@ -2,6 +2,7 @@
 const express = require('express');
 const { Server } = require('../models');
 const auth = require('../middleware/auth');
+const optionalAuth = require('../middleware/optionalAuth');
 const adminAuth = require('../middleware/adminAuth');
 const router = express.Router();
 
@@ -37,8 +38,8 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
-// Get free servers
-router.get('/free', auth, async (req, res) => {
+// Get free servers (PUBLIC - guests can browse without an account)
+router.get('/free', async (req, res) => {
   try {
     const servers = await Server.findAll({
       where: { 
@@ -182,7 +183,7 @@ router.delete('/:id', adminAuth, async (req, res) => {
 });
 
 // Get server configuration file
-router.get('/:id/config', auth, async (req, res) => {
+router.get('/:id/config', optionalAuth, async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -191,6 +192,14 @@ router.get('/:id/config', auth, async (req, res) => {
       return res.status(404).json({
         success: false,
         message: 'Server not found'
+      });
+    }
+
+    // Premium configs require a logged-in user; free configs are public.
+    if (server.type !== 'free' && !req.user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Please log in to use premium servers'
       });
     }
 

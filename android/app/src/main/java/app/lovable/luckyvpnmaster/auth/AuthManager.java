@@ -22,6 +22,7 @@ public class AuthManager {
     private static final String KEY_USER_EMAIL = "user_email";
     private static final String KEY_USER_PLAN = "user_plan";
     private static final String KEY_USER_POINTS = "user_points";
+    private static final String KEY_GUEST_MODE = "guest_mode";
     
     private Context context;
     private SharedPreferences prefs;
@@ -151,6 +152,7 @@ public class AuthManager {
     private void saveUserData(String token, JSONObject userData) throws Exception {
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(KEY_ACCESS_TOKEN, token);
+        editor.putBoolean(KEY_GUEST_MODE, false); // a real login ends guest mode
         editor.putInt(KEY_USER_ID, userData.getInt("id"));
         editor.putString(KEY_USER_NAME, userData.getString("name"));
         editor.putString(KEY_USER_EMAIL, userData.getString("email"));
@@ -170,7 +172,20 @@ public class AuthManager {
     }
 
     public boolean isLoggedIn() {
-        return !getAccessToken().isEmpty();
+        return !isGuest() && !getAccessToken().isEmpty();
+    }
+
+    /** Guest mode: free servers work without an account. */
+    public void setGuestMode(boolean guest) {
+        prefs.edit().putBoolean(KEY_GUEST_MODE, guest).apply();
+        if (guest) {
+            // guests carry no token
+            prefs.edit().remove(KEY_ACCESS_TOKEN).apply();
+        }
+    }
+
+    public boolean isGuest() {
+        return prefs.getBoolean(KEY_GUEST_MODE, false);
     }
 
     public String getAccessToken() {

@@ -68,6 +68,11 @@ public class ProfileFragment extends Fragment {
             tvUserPlan.setText(user.plan.toUpperCase());
             tvUserPoints.setText(String.valueOf(user.points));
             // tvReferralCode.setText(user.referralCode); // Add this to User model
+        } else if (authManager.isGuest()) {
+            tvUserName.setText("Guest");
+            tvUserEmail.setText("Log in to unlock premium");
+            tvUserPlan.setText("FREE");
+            btnLogout.setText("LOG IN / SIGN UP");
         }
     }
 }

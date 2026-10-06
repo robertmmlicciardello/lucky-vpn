@@ -1,6 +1,7 @@
 
 package app.lovable.luckyvpnmaster.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,9 +12,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.tabs.TabLayout;
 import java.util.List;
+import app.lovable.luckyvpnmaster.LoginActivity;
 import app.lovable.luckyvpnmaster.R;
 import app.lovable.luckyvpnmaster.adapters.ServerAdapter;
 import app.lovable.luckyvpnmaster.api.ServerManager;
+import app.lovable.luckyvpnmaster.auth.AuthManager;
 import app.lovable.luckyvpnmaster.models.Server;
 
 public class ServersFragment extends Fragment {
@@ -98,6 +101,15 @@ public class ServersFragment extends Fragment {
     }
 
     private void loadPremiumServers() {
+        AuthManager authManager = new AuthManager(getContext());
+        if (!authManager.isLoggedIn()) {
+            promptLoginForPremium();
+            // fall back to the free tab instead of showing an empty list
+            if (tabLayout != null && tabLayout.getTabAt(0) != null) {
+                tabLayout.getTabAt(0).select();
+            }
+            return;
+        }
         serverManager.getPremiumServers(new ServerManager.ServersCallback() {
             @Override
             public void onSuccess(List<Server> servers) {
@@ -117,5 +129,18 @@ public class ServersFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private void promptLoginForPremium() {
+        if (getActivity() == null) return;
+        new androidx.appcompat.app.AlertDialog.Builder(getActivity())
+            .setTitle("Premium servers")
+            .setMessage("Please log in or create an account to use premium servers. Free servers work without an account.")
+            .setPositiveButton("Log In", (d, w) -> {
+                new AuthManager(getContext()).setGuestMode(false);
+                startActivity(new Intent(getContext(), LoginActivity.class));
+            })
+            .setNegativeButton("Later", null)
+            .show();
     }
 }
