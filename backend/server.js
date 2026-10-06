@@ -29,8 +29,12 @@ const logger = require('./utils/logger');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Validate required environment variables
-const requiredEnvVars = ['JWT_SECRET', 'DB_HOST', 'DB_USER', 'DB_NAME'];
+// Validate required environment variables.
+// MySQL vars are only required when DB_DIALECT=mysql; sqlite needs just JWT_SECRET.
+const requiredEnvVars = ['JWT_SECRET'];
+if ((process.env.DB_DIALECT || 'mysql').toLowerCase() === 'mysql') {
+  requiredEnvVars.push('DB_HOST', 'DB_USER', 'DB_NAME');
+}
 for (const envVar of requiredEnvVars) {
   if (!process.env[envVar]) {
     logger.error(`Missing required environment variable: ${envVar}`);
