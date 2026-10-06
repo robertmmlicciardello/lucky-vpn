@@ -51,7 +51,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true
     },
     provider: {
-      type: DataTypes.ENUM('manual', 'oneconnect'),
+      type: DataTypes.ENUM('manual', 'oneconnect', 'vpngate'),
       defaultValue: 'manual'
     },
     oneconnect_id: {

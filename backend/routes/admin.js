@@ -66,4 +66,22 @@ router.get('/activity', adminAuth, async (req, res) => {
   }
 });
 
+// Trigger a VPNGate free-server sync (admin only).
+// Pulls the public VPNGate list and upserts it as provider='vpngate' servers.
+router.post('/vpngate-sync', adminAuth, async (req, res) => {
+  try {
+    const { fetchVpnGateCsv, parseVpnGateCsv, syncToDb } = require('../jobs/sync-vpngate');
+    const db = require('../models');
+    const servers = parseVpnGateCsv(await fetchVpnGateCsv());
+    const result = await syncToDb(db, servers);
+    res.json({ success: true, data: result });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: 'VPNGate sync failed: ' + error.message
+    });
+  }
+});
+
 module.exports = router;
