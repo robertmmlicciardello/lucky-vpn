@@ -144,12 +144,12 @@ async function syncToDb(db, servers) {
   let added = 0, updated = 0;
   for (const s of servers) {
     seen.add(s.name);
+    const { extra, ...fields } = s;
     const [row, created] = await Server.findOrCreate({
       where: { provider: 'vpngate', name: s.name },
-      defaults: { ...s, last_sync: new Date() },
+      defaults: { ...fields, last_sync: new Date() },
     });
     if (created) { added++; continue; }
-    const { extra, ...fields } = s;
     await row.update({ ...fields, status: 'online', last_sync: new Date() });
     updated++;
   }
