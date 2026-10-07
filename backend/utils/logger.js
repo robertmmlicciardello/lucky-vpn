@@ -37,6 +37,8 @@ const logger = winston.createLogger({
     version: process.env.npm_package_version || '1.0.0'
   },
   transports: [
+    // Console (Railway / Docker log viewers only show stdout)
+    new winston.transports.Console(),
     // Error logs
     new winston.transports.File({ 
       filename: path.join(logsDir, 'error.log'), 

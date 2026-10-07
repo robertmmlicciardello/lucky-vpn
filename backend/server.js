@@ -178,7 +178,28 @@ process.on('unhandledRejection', (err) => {
 
 // Database sync and server start
 let server;
-db.sequelize.sync({ force: false }).then(() => {
+
+// Ensure the MySQL database exists before Sequelize tries to use it
+// (fresh TiDB Cloud / managed MySQL instances start with no user databases).
+async function ensureDatabase() {
+  if ((process.env.DB_DIALECT || 'mysql').toLowerCase() !== 'mysql') return;
+  const mysql = require('mysql2/promise');
+  const dbName = process.env.DB_NAME || 'lucky_vpn_master';
+  const conn = await mysql.createConnection({
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT || 3306,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    ssl: process.env.DB_SSL === 'false' ? undefined : { minVersion: 'TLSv1.2', rejectUnauthorized: false },
+  });
+  await conn.query(`CREATE DATABASE IF NOT EXISTS \`${dbName.replace(/`/g, '')}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`);
+  await conn.end();
+  logger.info(`Database '${dbName}' ready`);
+}
+
+ensureDatabase()
+  .then(() => db.sequelize.sync({ force: false }))
+  .then(() => {
   // Scheduled VPNGate free-server sync (every 6h). Disable with SYNC_CRON=off.
   if (process.env.SYNC_CRON !== 'off') {
     try {
