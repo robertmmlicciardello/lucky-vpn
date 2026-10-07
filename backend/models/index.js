@@ -23,6 +23,14 @@ if (dialect === 'sqlite') {
       port: process.env.DB_PORT || 3306,
       dialect: 'mysql',
       logging: process.env.NODE_ENV === 'development' ? console.log : false,
+      // TiDB Cloud (and most managed MySQL) requires TLS on public endpoints.
+      // Set DB_SSL=false only for a local/plain MySQL without TLS.
+      dialectOptions: process.env.DB_SSL === 'false' ? {} : {
+        ssl: {
+          minVersion: 'TLSv1.2',
+          rejectUnauthorized: false
+        }
+      },
       pool: {
         max: 5,
         min: 0,
