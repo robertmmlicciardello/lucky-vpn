@@ -26,8 +26,8 @@ public class MainActivity extends AppCompatActivity {
 
         authManager = new AuthManager(this);
         
-        // Check if user is logged in
-        if (!authManager.isLoggedIn()) {
+        // Check if user is logged in (guests are allowed — free servers need no account)
+        if (!authManager.isLoggedIn() && !authManager.isGuest()) {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
             return;

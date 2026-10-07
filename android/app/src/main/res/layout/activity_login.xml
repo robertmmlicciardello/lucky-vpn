@@ -82,10 +82,10 @@
             android:id="@+id/btn_guest"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:text="CONTINUE AS GUEST"
+            android:text="Continue as Guest"
             android:textSize="16sp"
-            android:background="@drawable/button_outline"
-            android:textColor="@color/primary"
+            android:background="@drawable/button_primary"
+            android:textColor="@color/white"
             android:layout_marginBottom="16dp" />
 
         <ProgressBar
