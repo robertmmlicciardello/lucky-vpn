@@ -16,7 +16,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import app.lovable.luckyvpnmaster.R;
-import app.lovable.luckyvpnmaster.vpn.OpenVpnConnector;
+import app.lovable.luckyvpnmaster.vpn.EmbeddedOpenVpnConnector;
+// WireGuard temporarily disabled (see build.gradle)
+// import app.lovable.luckyvpnmaster.vpn.WireGuardConnector;
 import app.lovable.luckyvpnmaster.auth.AuthManager;
 import app.lovable.luckyvpnmaster.models.User;
 import app.lovable.luckyvpnmaster.models.Server;
@@ -37,14 +39,16 @@ public class HomeFragment extends Fragment implements ConnectionManager.NetworkC
     private LinearLayout connectionStatusLayout;
     private ConnectionManager connectionManager;
     private VPNConnectionReceiver vpnReceiver;
-    private final OpenVpnConnector.StatusListener vpnStatusListener =
-            new OpenVpnConnector.StatusListener() {
+    private String activeProtocol = null; // "openvpn" (wireguard planned)
+    private final EmbeddedOpenVpnConnector.StatusListener vpnStatusListener =
+            new EmbeddedOpenVpnConnector.StatusListener() {
         @Override
         public void onState(String state, String message) {
             if (getActivity() == null) return;
             getActivity().runOnUiThread(() -> {
-                Boolean connected = OpenVpnConnector.toConnected(state);
-                if (connected != null) {
+                boolean connected = "CONNECTED".equalsIgnoreCase(state);
+                boolean disconnected = "DISCONNECTED".equalsIgnoreCase(state);
+                if (connected || disconnected) {
                     updateConnectionStatus(connected);
                 } else if (tvConnectionStatus != null && message != null && !message.isEmpty()) {
                     tvConnectionStatus.setText(state);
@@ -166,23 +170,36 @@ public class HomeFragment extends Fragment implements ConnectionManager.NetworkC
             return;
         }
 
-        // Real VPN goes through "OpenVPN for Android" (de.blinkt.openvpn).
-        if (getActivity() != null
-                && !OpenVpnConnector.isClientInstalled(getActivity())) {
-            promptInstallOpenVpnClient();
-            return;
+        // Embedded VPN — no separate app install needed.
+        // System VPN permission first (one-time dialog).
+        if (getActivity() != null) {
+            Intent vpnIntent = android.net.VpnService.prepare(getActivity());
+            if (vpnIntent != null) {
+                startActivityForResult(vpnIntent, EmbeddedOpenVpnConnector.REQ_VPN_PERMISSION);
+                return;
+            }
         }
+
+        startEmbeddedVpn();
+    }
+
+    /** Starts the embedded tunnel after VPN permission is granted. */
+    private void startEmbeddedVpn() {
+        if (currentServer == null || getActivity() == null) return;
 
         showLoadingState();
 
-        // Download the inline .ovpn config for this server, then connect.
+        // Download the inline .ovpn config for this server, then connect
+        // via the embedded OpenVPN engine (no separate app needed).
         serverManager.getServerConfig(currentServer.id, new ServerManager.ConfigCallback() {
             @Override
-            public void onSuccess(String ovpnConfig) {
+            public void onSuccess(String vpnConfig) {
                 if (getActivity() == null) return;
-                getActivity().runOnUiThread(() ->
-                        OpenVpnConnector.getInstance().connect(
-                                getActivity(), ovpnConfig, vpnStatusListener));
+                getActivity().runOnUiThread(() -> {
+                    activeProtocol = "openvpn";
+                    EmbeddedOpenVpnConnector.getInstance().connect(
+                            getActivity(), vpnConfig, currentServer.name, vpnStatusListener);
+                });
             }
 
             @Override
@@ -199,9 +216,11 @@ public class HomeFragment extends Fragment implements ConnectionManager.NetworkC
 
     private void disconnectVPN() {
         showLoadingState();
-        OpenVpnConnector.getInstance().disconnect();
-        // The OpenVPN status callback confirms the real state; update
-        // optimistically as well so the UI never hangs on "loading".
+        if (getActivity() != null) {
+            EmbeddedOpenVpnConnector.getInstance().disconnect(getActivity());
+        }
+        activeProtocol = null;
+        // Update optimistically so the UI never hangs on "loading".
         new android.os.Handler().postDelayed(() -> {
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
@@ -212,23 +231,20 @@ public class HomeFragment extends Fragment implements ConnectionManager.NetworkC
         }, 1500);
     }
 
-    private void promptInstallOpenVpnClient() {
-        if (getActivity() == null) return;
-        new androidx.appcompat.app.AlertDialog.Builder(getActivity())
-                .setTitle("OpenVPN client needed")
-                .setMessage("To connect for real, please install the free " +
-                        "\"OpenVPN for Android\" app. Lucky VPN will then " +
-                        "connect through it automatically.")
-                .setPositiveButton("Install", (d, w) ->
-                        OpenVpnConnector.openPlayStore(getActivity()))
-                .setNegativeButton("Later", null)
-                .show();
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        OpenVpnConnector.getInstance().onActivityResult(requestCode, resultCode);
+        if (requestCode == EmbeddedOpenVpnConnector.REQ_VPN_PERMISSION) {
+            if (resultCode == android.app.Activity.RESULT_OK) {
+                // VPN permission granted — start the tunnel now.
+                startEmbeddedVpn();
+            } else {
+                showConnectionState();
+                android.widget.Toast.makeText(getContext(),
+                        "VPN permission is required to connect",
+                        android.widget.Toast.LENGTH_LONG).show();
+            }
+        }
     }
     private void showLoadingState() {
         if (loadingContainer != null && connectionStatusLayout != null && offlineLayout != null) {
@@ -356,7 +372,8 @@ public class HomeFragment extends Fragment implements ConnectionManager.NetworkC
         }
 
         if (getContext() != null) {
-            OpenVpnConnector.getInstance().release(getContext());
+            // Make sure any active tunnel is stopped
+            try { EmbeddedOpenVpnConnector.getInstance().disconnect(getContext()); } catch (Exception ignored) {}
         }
     }
 }
