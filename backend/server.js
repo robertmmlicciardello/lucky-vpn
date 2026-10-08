@@ -98,6 +98,12 @@ app.use('/api/v1/ads', adRoutes);
 app.use('/api/v1/notifications', notificationRoutes);
 app.use('/api/v1/support', supportRoutes);
 app.use('/api/v1/blog', blogRoutes);
+
+// Admin web panel (static single-page app)
+const path = require('path');
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
 app.use('/api/v1/leaderboard', leaderboardRoutes);
 
 // Health check endpoint with detailed information

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lucky VPN — Admin Panel</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f7fa; color: #1a1a1a; }
+  .login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .login-card { background: #fff; border-radius: 12px; padding: 40px; width: 100%; max-width: 380px; box-shadow: 0 4px 20px rgba(0,0,0,.08); }
+  .login-card h1 { color: #2196F3; font-size: 24px; margin-bottom: 6px; text-align: center; }
+  .login-card p { color: #888; text-align: center; margin-bottom: 24px; font-size: 14px; }
+  input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; margin-bottom: 12px; }
+  textarea { font-family: monospace; font-size: 12px; min-height: 120px; }
+  button { background: #2196F3; color: #fff; border: none; border-radius: 8px; padding: 12px 20px; font-size: 15px; cursor: pointer; }
+  button:hover { background: #1976D2; }
+  button.danger { background: #f44336; } button.danger:hover { background: #d32f2f; }
+  button.ghost { background: #eee; color: #333; } button.ghost:hover { background: #ddd; }
+  button.small { padding: 6px 12px; font-size: 13px; }
+  .error { color: #f44336; font-size: 14px; margin-bottom: 12px; text-align: center; }
+  .hidden { display: none !important; }
+  /* App layout */
+  .topbar { background: #2196F3; color: #fff; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; }
+  .topbar h1 { font-size: 18px; }
+  .topbar button { background: rgba(255,255,255,.2); padding: 8px 14px; font-size: 13px; }
+  .tabs { display: flex; background: #fff; border-bottom: 1px solid #eee; }
+  .tabs button { background: none; color: #666; border-radius: 0; padding: 14px 20px; border-bottom: 3px solid transparent; }
+  .tabs button.active { color: #2196F3; border-bottom-color: #2196F3; }
+  .content { padding: 20px; max-width: 1000px; margin: 0 auto; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 20px; }
+  .card { background: #fff; border-radius: 10px; padding: 18px; box-shadow: 0 2px 8px rgba(0,0,0,.05); }
+  .card .num { font-size: 28px; font-weight: 700; color: #2196F3; }
+  .card .label { font-size: 13px; color: #888; margin-top: 4px; }
+  table { width: 100%; background: #fff; border-radius: 10px; overflow: hidden; border-collapse: collapse; box-shadow: 0 2px 8px rgba(0,0,0,.05); font-size: 14px; }
+  th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #f0f0f0; }
+  th { background: #fafafa; color: #888; font-weight: 600; font-size: 12px; text-transform: uppercase; }
+  .toolbar { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+  .modal { position: fixed; inset: 0; background: rgba(0,0,0,.5); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 10; }
+  .modal-card { background: #fff; border-radius: 12px; padding: 24px; width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; }
+  .modal-card h2 { margin-bottom: 16px; font-size: 18px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .msg { padding: 12px; border-radius: 8px; margin-bottom: 14px; font-size: 14px; }
+  .msg.ok { background: #e8f5e9; color: #2e7d32; } .msg.err { background: #ffebee; color: #c62828; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginView" class="login-wrap">
+  <div class="login-card">
+    <h1>🔑 Lucky VPN</h1>
+    <p>Admin Panel</p>
+    <div id="loginError" class="error hidden"></div>
+    <input id="email" type="email" placeholder="Admin email" autocomplete="username">
+    <input id="password" type="password" placeholder="Password" autocomplete="current-password">
+    <button id="loginBtn" style="width:100%">Login</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="appView" class="hidden">
+  <div class="topbar">
+    <h1>🔑 Lucky VPN Admin</h1>
+    <button id="logoutBtn">Logout</button>
+  </div>
+  <div class="tabs">
+    <button data-tab="dashboard" class="active">Dashboard</button>
+    <button data-tab="servers">Servers</button>
+  </div>
+  <div class="content">
+    <div id="msg" class="msg hidden"></div>
+
+    <!-- DASHBOARD -->
+    <div id="tab-dashboard">
+      <div class="cards">
+        <div class="card"><div class="num" id="stUsers">–</div><div class="label">Total users</div></div>
+        <div class="card"><div class="num" id="stPremium">–</div><div class="label">Premium users</div></div>
+        <div class="card"><div class="num" id="stServers">–</div><div class="label">Online servers</div></div>
+        <div class="card"><div class="num" id="stPayments">–</div><div class="label">Pending payments</div></div>
+      </div>
+      <div class="toolbar">
+        <button id="syncBtn">🔄 Sync VPNGate now</button>
+        <button id="refreshBtn" class="ghost">Refresh</button>
+      </div>
+    </div>
+
+    <!-- SERVERS -->
+    <div id="tab-servers" class="hidden">
+      <div class="toolbar">
+        <button id="addServerBtn">＋ Add server</button>
+        <button id="reloadServersBtn" class="ghost">Reload</button>
+      </div>
+      <div style="overflow-x:auto">
+      <table>
+        <thead><tr><th>ID</th><th>Name</th><th>Country</th><th>IP</th><th>Type</th><th>Status</th><th></th></tr></thead>
+        <tbody id="serverRows"><tr><td colspan="7" style="text-align:center;color:#aaa">Loading…</td></tr></tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SERVER MODAL -->
+<div id="serverModal" class="modal hidden">
+  <div class="modal-card">
+    <h2 id="modalTitle">Add server</h2>
+    <input id="f_id" type="hidden">
+    <input id="f_name" placeholder="Name (e.g. My VPS 1)">
+    <div class="row">
+      <input id="f_country" placeholder="Country">
+      <input id="f_city" placeholder="City">
+    </div>
+    <div class="row">
+      <input id="f_ip" placeholder="IP / hostname">
+      <input id="f_port" placeholder="Port (1194)">
+    </div>
+    <div class="row">
+      <select id="f_protocol"><option>OpenVPN</option><option>IKEv2</option><option>WireGuard</option></select>
+      <select id="f_type"><option value="free">free</option><option value="premium">premium</option></select>
+    </div>
+    <textarea id="f_config" placeholder="Paste inline .ovpn config here (optional — required for OpenVPN connect)"></textarea>
+    <div class="toolbar">
+      <button id="saveServerBtn">Save</button>
+      <button id="cancelModalBtn" class="ghost">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = location.origin + '/api/v1';
+let token = localStorage.getItem('admin_token') || '';
+
+const $ = id => document.getElementById(id);
+function showMsg(text, ok) {
+  const m = $('msg'); m.textContent = text;
+  m.className = 'msg ' + (ok ? 'ok' : 'err');
+  m.classList.remove('hidden');
+  setTimeout(() => m.classList.add('hidden'), 4000);
+}
+async function api(path, method, body) {
+  const r = await fetch(API + path, {
+    method: method || 'GET',
+    headers: Object.assign({ 'Content-Type': 'application/json' }, token ? { 'Authorization': 'Bearer ' + token } : {}),
+    body: body ? JSON.stringify(body) : undefined
+  });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.message || ('HTTP ' + r.status));
+  return j;
+}
+
+// ---- login ----
+async function doLogin() {
+  const e = $('loginError'); e.classList.add('hidden');
+  try {
+    const j = await api('/auth/admin/login', 'POST', { email: $('email').value.trim(), password: $('password').value });
+    token = j.data.token;
+    localStorage.setItem('admin_token', token);
+    enterApp();
+  } catch (err) { e.textContent = err.message; e.classList.remove('hidden'); }
+}
+function enterApp() { $('loginView').classList.add('hidden'); $('appView').classList.remove('hidden'); loadDashboard(); loadServers(); }
+$('loginBtn').onclick = doLogin;
+$('password').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+$('logoutBtn').onclick = () => { token = ''; localStorage.removeItem('admin_token'); location.reload(); };
+
+// ---- tabs ----
+document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('.tabs button').forEach(x => x.classList.remove('active'));
+  b.classList.add('active');
+  $('tab-dashboard').classList.toggle('hidden', b.dataset.tab !== 'dashboard');
+  $('tab-servers').classList.toggle('hidden', b.dataset.tab !== 'servers');
+});
+
+// ---- dashboard ----
+async function loadDashboard() {
+  try {
+    const j = await api('/admin/stats');
+    const d = j.data;
+    $('stUsers').textContent = d.totalUsers;
+    $('stPremium').textContent = d.premiumUsers;
+    $('stServers').textContent = d.activeServers;
+    $('stPayments').textContent = d.pendingPayments;
+  } catch (err) { showMsg('Stats: ' + err.message, false); }
+}
+$('refreshBtn').onclick = loadDashboard;
+$('syncBtn').onclick = async () => {
+  $('syncBtn').disabled = true; $('syncBtn').textContent = 'Syncing…';
+  try { const j = await api('/admin/vpngate-sync', 'POST'); showMsg('VPNGate sync done: ' + JSON.stringify(j.data || j.message || 'ok'), true); loadDashboard(); loadServers(); }
+  catch (err) { showMsg('Sync failed: ' + err.message, false); }
+  $('syncBtn').disabled = false; $('syncBtn').textContent = '🔄 Sync VPNGate now';
+};
+
+// ---- servers ----
+let servers = [];
+async function loadServers() {
+  try {
+    const j = await api('/servers');
+    servers = j.data.servers || j.data || [];
+    const tb = $('serverRows');
+    if (!servers.length) { tb.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#aaa">No servers</td></tr>'; return; }
+    tb.innerHTML = servers.map(s =>
+      '<tr><td>' + s.id + '</td><td>' + esc(s.name) + '</td><td>' + esc(s.country) + '</td>' +
+      '<td>' + esc(s.ip) + '</td><td>' + esc(s.type) + '</td><td>' + esc(s.status) + '</td>' +
+      '<td><button class="small" onclick="editServer(' + s.id + ')">Edit</button> ' +
+      '<button class="small danger" onclick="delServer(' + s.id + ')">Del</button></td></tr>'
+    ).join('');
+  } catch (err) { $('serverRows').innerHTML = '<tr><td colspan="7" style="color:#c62828">' + esc(err.message) + '</td></tr>'; }
+}
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+$('reloadServersBtn').onclick = loadServers;
+$('addServerBtn').onclick = () => openModal(null);
+function openModal(s) {
+  $('modalTitle').textContent = s ? 'Edit server #' + s.id : 'Add server';
+  $('f_id').value = s ? s.id : '';
+  $('f_name').value = s ? s.name || '' : '';
+  $('f_country').value = s ? s.country || '' : '';
+  $('f_city').value = s ? s.city || '' : '';
+  $('f_ip').value = s ? s.ip || '' : '';
+  $('f_port').value = s ? s.port || '' : '';
+  $('f_protocol').value = s ? s.protocol || 'OpenVPN' : 'OpenVPN';
+  $('f_type').value = s ? s.type || 'free' : 'free';
+  $('f_config').value = s ? s.config_file || '' : '';
+  $('serverModal').classList.remove('hidden');
+}
+window.editServer = id => openModal(servers.find(s => s.id === id));
+window.delServer = async id => {
+  if (!confirm('Delete server #' + id + '?')) return;
+  try { await api('/servers/' + id, 'DELETE'); showMsg('Server deleted', true); loadServers(); }
+  catch (err) { showMsg('Delete failed: ' + err.message, false); }
+};
+$('cancelModalBtn').onclick = () => $('serverModal').classList.add('hidden');
+$('saveServerBtn').onclick = async () => {
+  const id = $('f_id').value;
+  const body = {
+    name: $('f_name').value.trim(), country: $('f_country').value.trim(), city: $('f_city').value.trim(),
+    ip: $('f_ip').value.trim(), port: $('f_port').value.trim() || '1194',
+    protocol: $('f_protocol').value, type: $('f_type').value, config_file: $('f_config').value
+  };
+  if (!body.name || !body.ip) { showMsg('Name and IP are required', false); return; }
+  try {
+    if (id) await api('/servers/' + id, 'PUT', body);
+    else await api('/servers', 'POST', body);
+    $('serverModal').classList.add('hidden');
+    showMsg('Server saved', true); loadServers(); loadDashboard();
+  } catch (err) { showMsg('Save failed: ' + err.message, false); }
+};
+
+// auto-login if token saved
+if (token) enterApp();
+</script>
+</body>
+</html>
