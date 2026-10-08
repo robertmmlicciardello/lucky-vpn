@@ -84,10 +84,15 @@ public class HomeFragment extends Fragment implements ConnectionManager.NetworkC
         connectionManager.addCallback(this);
         
         // Register VPN connection receiver
+        // (Android 14+ requires RECEIVER_NOT_EXPORTED for non-system broadcasts)
         vpnReceiver = new VPNConnectionReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction("VPN_CONNECTION_ERROR");
-        getContext().registerReceiver(vpnReceiver, filter);
+        if (android.os.Build.VERSION.SDK_INT >= 34) {
+            getContext().registerReceiver(vpnReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+        } else {
+            getContext().registerReceiver(vpnReceiver, filter);
+        }
     }
     
     private void initializeViews(View view) {
