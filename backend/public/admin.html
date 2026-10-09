@@ -129,7 +129,14 @@
 
 <script>
 const API = location.origin + '/api/v1';
-let token = localStorage.getItem('admin_token') || '';
+// localStorage can throw in private/incognito mode — guard it so the whole
+// script (including the login button handler) doesn't die on page load.
+const store = {
+  get(k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
+  del(k) { try { localStorage.removeItem(k); } catch (e) {} }
+};
+let token = store.get('admin_token');
 
 const $ = id => document.getElementById(id);
 function showMsg(text, ok) {
@@ -155,14 +162,14 @@ async function doLogin() {
   try {
     const j = await api('/auth/admin/login', 'POST', { email: $('email').value.trim(), password: $('password').value });
     token = j.data.token;
-    localStorage.setItem('admin_token', token);
+    store.set('admin_token', token);
     enterApp();
   } catch (err) { e.textContent = err.message; e.classList.remove('hidden'); }
 }
 function enterApp() { $('loginView').classList.add('hidden'); $('appView').classList.remove('hidden'); loadDashboard(); loadServers(); }
 $('loginBtn').onclick = doLogin;
 $('password').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
-$('logoutBtn').onclick = () => { token = ''; localStorage.removeItem('admin_token'); location.reload(); };
+$('logoutBtn').onclick = () => { token = ''; store.del('admin_token'); location.reload(); };
 
 // ---- tabs ----
 document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
