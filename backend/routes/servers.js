@@ -2,15 +2,18 @@
 const express = require('express');
 const { Server } = require('../models');
 const auth = require('../middleware/auth');
+const adminOrAuth = require('../middleware/adminOrAuth');
 const optionalAuth = require('../middleware/optionalAuth');
 const adminAuth = require('../middleware/adminAuth');
 const router = express.Router();
 
 // Get all servers
-router.get('/', auth, async (req, res) => {
+router.get('/', adminOrAuth, async (req, res) => {
   try {
     const { type } = req.query;
-    let whereClause = { status: 'online' };
+    // Admins see all servers (including offline) for management;
+    // regular users only see online ones.
+    let whereClause = req.isAdmin ? {} : { status: 'online' };
     
     if (type === 'free') {
       whereClause.type = 'free';
