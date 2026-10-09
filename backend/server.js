@@ -104,6 +104,10 @@ const path = require('path');
 app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
+app.get('/admin.js', (req, res) => {
+  res.type('application/javascript');
+  res.sendFile(path.join(__dirname, 'public', 'admin.js'));
+});
 app.use('/api/v1/leaderboard', leaderboardRoutes);
 
 // Health check endpoint with detailed information
