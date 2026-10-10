@@ -58,4 +58,77 @@
     <string name="loading">စောင့်ပါ...</string>
     <string name="error_network">ကွန်ယက် အမှားအယွင်း။ ထပ်ကြိုးစားပါ။</string>
     <string name="error_general">တစ်ခုခု မှားယွင်းနေသည်။ ထပ်ကြိုးစားပါ။</string>
+
+    <!-- Navigation (bottom bar) -->
+    <string name="nav_speedtest">အမြန်နှုန်းစမ်းသပ်</string>
+
+    <!-- Auth extras -->
+    <string name="create_account">အကောင့်ဖွင့်ရန်</string>
+    <string name="login_tagline">လုံခြုံ မြန်ဆန်သော VPN ချိတ်ဆက်မှု</string>
+    <string name="continue_as_guest">ဧည့်သည်အဖြစ် ဆက်သွားရန်</string>
+    <string name="back">နောက်သို့</string>
+
+    <!-- Home -->
+    <string name="hello_user">မင်္ဂလာပါ၊</string>
+    <string name="stay_safe_connected">ဘေးကင်းလုံခြုံစွာ ချိတ်ဆက်နေပါ</string>
+    <string name="server_location">ဆာဗာတည်နေရာ</string>
+    <string name="change">ပြောင်းရန်</string>
+    <string name="download">ဒေါင်းလုဒ်</string>
+    <string name="upload">အပ်လုဒ်</string>
+    <string name="your_ip_address">သင့်ရဲ့ IP လိပ်စာ</string>
+    <string name="hidden">ဖုံးကွယ်ပြီး</string>
+
+    <!-- Servers -->
+    <string name="server_locations">ဆာဗာတည်နေရာများ</string>
+    <string name="search_country_city">နိုင်ငံ သို့မဟုတ် မြို့ ရှာရန်...</string>
+    <string name="region_all">အားလုံး</string>
+    <string name="region_asia">အာရှ</string>
+    <string name="region_europe">ဥရောပ</string>
+    <string name="region_americas">အမေရိက</string>
+    <string name="signal_strength">လိုင်းအား</string>
+    <string name="selected">ရွေးချယ်ပြီး</string>
+
+    <!-- Profile -->
+    <string name="premium_upsell_subtitle">ပိုမိုကောင်းမွန်သော လုံခြုံမြန်ဆန်သည့် အင်တာနက်ကို ခံစားလိုက်ပါ။</string>
+    <string name="upgrade">အဆင့်မြှင့်ရန်</string>
+    <string name="connection_history">ချိတ်ဆက်မှုမှတ်တမ်း</string>
+    <string name="settings">ဆက်တင်များ</string>
+    <string name="subscription">စာရင်းသွင်းမှု</string>
+    <string name="help_support">အကူအညီ</string>
+    <string name="privacy_policy">ကိုယ်ရေးအချက်အလက် မူဝါဒ</string>
+    <string name="about">အကြောင်း</string>
+    <string name="coming_soon">မကြာမီ ရရှိမည်</string>
+
+    <!-- Subscription / Premium -->
+    <string name="go_premium">ပရီမီယံရယူရန်</string>
+    <string name="feature_more_servers">ဆာဗာတည်နေရာများ ပိုမိုရရှိမည်</string>
+    <string name="feature_higher_speed">ပိုမိုမြန်ဆန်သော အမြန်နှုန်း</string>
+    <string name="feature_no_ads">ကြော်ငြာမရှိ</string>
+    <string name="feature_multi_device">စက်များစွာ သုံးနိုင်သည်</string>
+    <string name="feature_priority_support">ဦးစားပေး အကူအညီ</string>
+    <string name="price_monthly">$4.99</string>
+    <string name="price_yearly">$39.99</string>
+    <string name="per_month">/ လ</string>
+    <string name="per_year">/ နှစ်</string>
+    <string name="current_plan_free">လက်ရှိအစီအစဉ်: အခမဲ့</string>
+
+    <!-- Speed test -->
+    <string name="speed_test">အမြန်နှုန်းစမ်းသပ်မှု</string>
+    <string name="mbps">Mbps</string>
+    <string name="test_server">စမ်းသပ်ဆာဗာ</string>
+    <string name="test_again">ထပ်စမ်းရန်</string>
+    <string name="last_results">နောက်ဆုံးရလဒ်များ</string>
+
+    <!-- Settings -->
+    <string name="vpn_settings">VPN ဆက်တင်များ</string>
+    <string name="auto_connect">အလိုအလျောက် ချိတ်ဆက်ရန်</string>
+    <string name="auto_connect_desc">မလုံခြုံသော ကွန်ယက်များတွင် အလိုအလျောက် ချိတ်ဆက်မည်</string>
+    <string name="kill_switch">Kill Switch</string>
+    <string name="kill_switch_desc">VPN ပြတ်တောက်ပါက အင်တာနက်သုံးစွဲမှုကို တားဆီးမည်</string>
+    <string name="protocol">ပရိုတိုကော</string>
+    <string name="dns">DNS</string>
+    <string name="dns_default">ပုံမှန် — လုံခြုံသော DNS ဆာဗာများ သုံးမည်</string>
+    <string name="general">အထွေထွေ</string>
+    <string name="notifications">အသိပေးချက်များ</string>
+    <string name="notifications_desc">ချိတ်ဆက်မှု သတိပေးချက်များနှင့် အပ်ဒိတ်များ</string>
 </resources>

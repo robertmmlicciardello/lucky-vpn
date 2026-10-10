@@ -65,4 +65,86 @@
     <string name="vpn_connected">VPN Connected</string>
     <string name="vpn_disconnected">VPN Disconnected</string>
     <string name="secure_connection">Secure Connection</string>
+
+    <!-- Navigation (bottom bar) -->
+    <string name="nav_home">Home</string>
+    <string name="nav_servers">Servers</string>
+    <string name="nav_speedtest">Speed Test</string>
+    <string name="nav_profile">Profile</string>
+
+    <!-- Auth extras -->
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="dont_have_account">Don\'t have an account?</string>
+    <string name="already_have_account">Already have an account?</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="sign_in">Sign In</string>
+    <string name="referral_code">Referral Code (Optional)</string>
+    <string name="create_account">Create Account</string>
+    <string name="login_tagline">Secure &amp; Fast VPN Connection</string>
+    <string name="continue_as_guest">Continue as Guest</string>
+    <string name="back">Back</string>
+
+    <!-- Home -->
+    <string name="hello_user">Hello,</string>
+    <string name="stay_safe_connected">Stay safe, stay connected</string>
+    <string name="server_location">Server Location</string>
+    <string name="change">Change</string>
+    <string name="download">Download</string>
+    <string name="upload">Upload</string>
+    <string name="your_ip_address">Your IP Address</string>
+    <string name="hidden">Hidden</string>
+
+    <!-- Servers -->
+    <string name="server_locations">Server Locations</string>
+    <string name="search_country_city">Search country or city...</string>
+    <string name="region_all">All</string>
+    <string name="region_asia">Asia</string>
+    <string name="region_europe">Europe</string>
+    <string name="region_americas">Americas</string>
+    <string name="signal_strength">Signal strength</string>
+    <string name="selected">Selected</string>
+
+    <!-- Profile -->
+    <string name="premium_upsell_subtitle">Unlock more features and enjoy a safer, faster internet.</string>
+    <string name="upgrade">Upgrade</string>
+    <string name="connection_history">Connection History</string>
+    <string name="settings">Settings</string>
+    <string name="subscription">Subscription</string>
+    <string name="help_support">Help &amp; Support</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="about">About</string>
+    <string name="coming_soon">Coming soon</string>
+
+    <!-- Subscription / Premium -->
+    <string name="go_premium">Go Premium</string>
+    <string name="feature_more_servers">More Server Locations</string>
+    <string name="feature_higher_speed">Higher Speed</string>
+    <string name="feature_no_ads">No Ads</string>
+    <string name="feature_multi_device">Multi-Device Support</string>
+    <string name="feature_priority_support">Priority Support</string>
+    <string name="price_monthly">$4.99</string>
+    <string name="price_yearly">$39.99</string>
+    <string name="per_month">/ month</string>
+    <string name="per_year">/ year</string>
+    <string name="current_plan_free">Current Plan: FREE</string>
+
+    <!-- Speed test -->
+    <string name="speed_test">Speed Test</string>
+    <string name="mbps">Mbps</string>
+    <string name="test_server">Test Server</string>
+    <string name="test_again">Test Again</string>
+    <string name="last_results">Last Results</string>
+
+    <!-- Settings -->
+    <string name="vpn_settings">VPN Settings</string>
+    <string name="auto_connect">Auto Connect</string>
+    <string name="auto_connect_desc">Connect automatically when using unsecured networks</string>
+    <string name="kill_switch">Kill Switch</string>
+    <string name="kill_switch_desc">Prevent internet access if VPN disconnects</string>
+    <string name="protocol">Protocol</string>
+    <string name="dns">DNS</string>
+    <string name="dns_default">Default — Use secure DNS servers</string>
+    <string name="general">General</string>
+    <string name="notifications">Notifications</string>
+    <string name="notifications_desc">Connection alerts and updates</string>
 </resources>

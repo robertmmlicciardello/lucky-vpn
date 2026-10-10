@@ -18,7 +18,7 @@ public class SubscriptionActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private SubscriptionPlanAdapter adapter;
     private TextView tvCurrentPlan;
-    private Button btnBack;
+    private android.widget.ImageButton btnBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

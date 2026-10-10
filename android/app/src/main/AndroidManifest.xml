@@ -12,6 +12,9 @@
     
     <!-- Ad Permissions -->
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
+
+    <!-- Feature: kill-switch / connection notifications (Android 13+) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     
     <application
         android:allowBackup="true"
@@ -52,6 +55,18 @@
         <!-- Payment Activity -->
         <activity
             android:name=".PaymentActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <!-- Feature: Settings -->
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme" />
+
+        <!-- Feature: Kill Switch warning -->
+        <activity
+            android:name=".KillSwitchActivity"
             android:exported="false"
             android:theme="@style/AppTheme.NoActionBar" />
 

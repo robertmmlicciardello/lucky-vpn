@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Base application theme: light, SecureVPN blue -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/vpn_blue</item>
+        <item name="colorPrimaryVariant">@color/vpn_blue_dark</item>
+        <item name="colorPrimaryDark">@color/vpn_blue_dark</item>
+        <item name="colorAccent">@color/vpn_blue</item>
+        <item name="colorSecondary">@color/vpn_green</item>
+        <item name="android:statusBarColor">@color/vpn_blue_dark</item>
+        <item name="android:navigationBarColor">@color/white</item>
+        <item name="android:windowBackground">@color/vpn_bg</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+    <!-- No ActionBar theme (kept for manifest compatibility) -->
+    <style name="AppTheme.NoActionBar" parent="AppTheme" />
+
+</resources>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Feature strings for Speed Test, History, Settings, Kill Switch.
+     Separate file so it never conflicts with strings.xml edits. -->
+<resources>
+    <!-- Speed test -->
+    <string name="speed_test_title">Speed Test</string>
+    <string name="speed_download">Download</string>
+    <string name="speed_upload">Upload</string>
+    <string name="speed_ping">Ping</string>
+    <string name="speed_test_again">Test Again</string>
+    <string name="speed_test_server">Test server</string>
+    <string name="speed_history">Recent tests</string>
+
+    <!-- Connection history -->
+    <string name="connection_history_title">Connection History</string>
+    <string name="history_empty">No connections yet</string>
+    <string name="history_status_connected">Connected</string>
+    <string name="history_status_disconnected">Disconnected</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_auto_connect">Auto Connect</string>
+    <string name="settings_auto_connect_desc">Reconnect automatically on app start</string>
+    <string name="settings_kill_switch">Kill Switch</string>
+    <string name="settings_kill_switch_desc">Block internet if VPN disconnects unexpectedly</string>
+    <string name="settings_notifications">Notifications</string>
+    <string name="settings_notifications_desc">Show connection status notifications</string>
+    <string name="settings_protocol">Protocol</string>
+    <string name="settings_protocol_value">OpenVPN (UDP)</string>
+    <string name="settings_dns">DNS</string>
+    <string name="settings_dns_value">Automatic (1.1.1.1)</string>
+    <string name="notifications_permission_denied">Notification permission denied — notifications stay off</string>
+
+    <!-- Kill switch -->
+    <string name="kill_switch_title">VPN disconnected</string>
+    <string name="kill_switch_blocking">Kill Switch is blocking internet access</string>
+    <string name="kill_switch_notif_title">Kill Switch active</string>
+    <string name="kill_switch_notif_text">VPN disconnected — internet blocked</string>
+    <string name="kill_switch_channel_name">Kill Switch alerts</string>
+    <string name="kill_switch_channel_desc">Warnings when the VPN drops unexpectedly</string>
+    <string name="reconnect">Reconnect</string>
+    <string name="dismiss">Dismiss</string>
+</resources>

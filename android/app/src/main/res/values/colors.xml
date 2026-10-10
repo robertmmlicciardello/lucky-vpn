@@ -30,4 +30,17 @@
     
     <!-- Transparent -->
     <color name="transparent">#00000000</color>
+
+    <!-- SecureVPN palette -->
+    <color name="vpn_blue">#1a56db</color>
+    <color name="vpn_blue_dark">#0d3b9e</color>
+    <color name="vpn_blue_light">#e8effe</color>
+    <color name="vpn_green">#22c55e</color>
+    <color name="vpn_green_light">#dcfce7</color>
+    <color name="vpn_bg">#f3f6fc</color>
+    <color name="vpn_card">#ffffff</color>
+    <color name="vpn_text_primary">#101828</color>
+    <color name="vpn_text_secondary">#667085</color>
+    <color name="vpn_divider">#e4e7ec</color>
+    <color name="vpn_red">#ef4444</color>
 </resources>

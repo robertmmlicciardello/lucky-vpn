@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -24,11 +25,29 @@ import app.lovable.luckyvpnmaster.models.User;
 import app.lovable.luckyvpnmaster.models.Server;
 import app.lovable.luckyvpnmaster.api.ServerManager;
 import app.lovable.luckyvpnmaster.utils.ConnectionManager;
+import app.lovable.luckyvpnmaster.utils.ConnectionHistoryManager;
+import app.lovable.luckyvpnmaster.utils.KillSwitchManager;
+import app.lovable.luckyvpnmaster.utils.SettingsManager;
 
 public class HomeFragment extends Fragment implements ConnectionManager.NetworkCallback {
     private TextView tvConnectionStatus, tvUserName, tvUserPlan, tvCurrentServer;
-    private Button btnConnect;
-    private ImageView ivConnectionIcon;
+    private TextView tvConnectionTimer, tvIpAddress, tvDownloadSpeed, tvUploadSpeed;
+    private ImageButton btnConnect;
+    private Button btnChangeServer;
+    private ImageView ivConnectRing;
+    private final android.os.Handler timerHandler = new android.os.Handler();
+    private long connectStartTime = 0;
+    private final Runnable timerRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (isConnected && tvConnectionTimer != null) {
+                long elapsed = (System.currentTimeMillis() - connectStartTime) / 1000;
+                tvConnectionTimer.setText(String.format(java.util.Locale.US, "%02d:%02d:%02d",
+                        elapsed / 3600, (elapsed % 3600) / 60, elapsed % 60));
+                timerHandler.postDelayed(this, 1000);
+            }
+        }
+    };
     private AuthManager authManager;
     private ServerManager serverManager;
     private boolean isConnected = false;
@@ -40,6 +59,11 @@ public class HomeFragment extends Fragment implements ConnectionManager.NetworkC
     private ConnectionManager connectionManager;
     private VPNConnectionReceiver vpnReceiver;
     private String activeProtocol = null; // "openvpn" (wireguard planned)
+    // Connection-history + kill-switch integration
+    private ConnectionHistoryManager historyManager;
+    private long connectStartSec = 0;
+    private boolean userInitiatedDisconnect = false;
+    private boolean autoConnectDone = false;
     private final EmbeddedOpenVpnConnector.StatusListener vpnStatusListener =
             new EmbeddedOpenVpnConnector.StatusListener() {
         @Override
@@ -52,6 +76,25 @@ public class HomeFragment extends Fragment implements ConnectionManager.NetworkC
                     updateConnectionStatus(connected);
                 } else if (tvConnectionStatus != null && message != null && !message.isEmpty()) {
                     tvConnectionStatus.setText(state);
+                }
+                // ---- history + kill-switch ----
+                if (getContext() == null) return;
+                if (connected) {
+                    if (historyManager == null) historyManager = new ConnectionHistoryManager(getContext());
+                    String name = currentServer != null ? currentServer.name : "Unknown";
+                    String country = currentServer != null ? currentServer.country : "";
+                    historyManager.recordConnect(name, country);
+                    connectStartSec = System.currentTimeMillis() / 1000;
+                    KillSwitchManager.clear(getContext());
+                } else if (disconnected) {
+                    if (historyManager == null) historyManager = new ConnectionHistoryManager(getContext());
+                    long dur = connectStartSec > 0
+                            ? (System.currentTimeMillis() / 1000 - connectStartSec) : 0;
+                    historyManager.recordDisconnect(dur);
+                    connectStartSec = 0;
+                    if (!userInitiatedDisconnect) {
+                        KillSwitchManager.onUnexpectedDisconnect(getContext());
+                    }
                 }
             });
         }
@@ -79,7 +122,16 @@ public class HomeFragment extends Fragment implements ConnectionManager.NetworkC
         setupClickListeners();
         loadUserData();
         loadBestServer();
-        
+
+        // Restore UI if the tunnel survived a rotation / tab switch.
+        try {
+            if (EmbeddedOpenVpnConnector.getInstance().isConnected()) {
+                String srv = EmbeddedOpenVpnConnector.getInstance().getCurrentServerName();
+                if (srv != null && tvCurrentServer != null) tvCurrentServer.setText(srv);
+                updateConnectionStatus(true);
+            }
+        } catch (Exception ignored) {}
+
         return view;
     }
     
@@ -104,8 +156,13 @@ public class HomeFragment extends Fragment implements ConnectionManager.NetworkC
         tvUserName = view.findViewById(R.id.tv_user_name);
         tvUserPlan = view.findViewById(R.id.tv_user_plan);
         tvCurrentServer = view.findViewById(R.id.tv_current_server);
+        tvConnectionTimer = view.findViewById(R.id.tv_connection_timer);
+        tvIpAddress = view.findViewById(R.id.tv_ip_address);
+        tvDownloadSpeed = view.findViewById(R.id.tv_download_speed);
+        tvUploadSpeed = view.findViewById(R.id.tv_upload_speed);
         btnConnect = view.findViewById(R.id.btn_connect);
-        ivConnectionIcon = view.findViewById(R.id.iv_connection_icon);
+        btnChangeServer = view.findViewById(R.id.btn_change_server);
+        ivConnectRing = view.findViewById(R.id.iv_connect_ring);
         
         offlineLayout = view.findViewById(R.id.offline_layout);
         loadingContainer = view.findViewById(R.id.loading_container);
@@ -121,18 +178,35 @@ public class HomeFragment extends Fragment implements ConnectionManager.NetworkC
     private void setupClickListeners() {
         btnConnect.setOnClickListener(v -> {
             if (isConnected) {
+                userInitiatedDisconnect = true;
                 disconnectVPN();
             } else {
+                userInitiatedDisconnect = false;
                 connectVPN();
             }
         });
+
+        if (btnChangeServer != null) {
+            btnChangeServer.setOnClickListener(v -> {
+                if (getActivity() != null) {
+                    com.google.android.material.bottomnavigation.BottomNavigationView nav =
+                            getActivity().findViewById(R.id.bottom_navigation);
+                    if (nav != null) {
+                        nav.setSelectedItemId(R.id.nav_servers);
+                    }
+                }
+            });
+        }
     }
     
     private void loadUserData() {
         User user = authManager.getCurrentUser();
         if (user != null) {
-            tvUserName.setText("Welcome, " + user.name);
+            tvUserName.setText(getString(R.string.hello_user) + " " + user.name);
             tvUserPlan.setText(user.plan.toUpperCase() + " Plan");
+        } else if (authManager.isGuest()) {
+            tvUserName.setText(getString(R.string.hello_user) + " Guest");
+            tvUserPlan.setText("FREE Plan");
         }
     }
     
@@ -144,6 +218,14 @@ public class HomeFragment extends Fragment implements ConnectionManager.NetworkC
                     getActivity().runOnUiThread(() -> {
                         currentServer = server;
                         tvCurrentServer.setText(server.country + " - " + server.city);
+                        // Auto-connect on launch if the user enabled it.
+                        if (!autoConnectDone && getContext() != null
+                                && new SettingsManager(getContext()).isAutoConnect()
+                                && !EmbeddedOpenVpnConnector.getInstance().isConnected()) {
+                            autoConnectDone = true;
+                            userInitiatedDisconnect = false;
+                            connectVPN();
+                        }
                     });
                 }
             }
@@ -290,19 +372,32 @@ public class HomeFragment extends Fragment implements ConnectionManager.NetworkC
     
     private void updateConnectionStatus(boolean connected) {
         isConnected = connected;
-        
+
         if (connected) {
-            tvConnectionStatus.setText("CONNECTED");
-            tvConnectionStatus.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
-            btnConnect.setText("DISCONNECT");
-            btnConnect.setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark));
-            ivConnectionIcon.setImageResource(R.drawable.ic_shield_check);
+            tvConnectionStatus.setText(R.string.connected);
+            tvConnectionStatus.setTextColor(getResources().getColor(R.color.vpn_green));
+            ivConnectRing.setImageResource(R.drawable.ring_connect_active);
+            btnConnect.setColorFilter(getResources().getColor(R.color.vpn_green));
+            btnConnect.setContentDescription(getString(R.string.disconnect));
+            // Start the connection timer
+            connectStartTime = System.currentTimeMillis();
+            if (tvConnectionTimer != null) {
+                tvConnectionTimer.setVisibility(View.VISIBLE);
+                tvConnectionTimer.setText("00:00:00");
+                timerHandler.removeCallbacks(timerRunnable);
+                timerHandler.post(timerRunnable);
+            }
         } else {
-            tvConnectionStatus.setText("DISCONNECTED");
-            tvConnectionStatus.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
-            btnConnect.setText("CONNECT");
-            btnConnect.setBackgroundColor(getResources().getColor(android.R.color.holo_green_dark));
-            ivConnectionIcon.setImageResource(R.drawable.ic_shield_off);
+            tvConnectionStatus.setText(R.string.disconnected);
+            tvConnectionStatus.setTextColor(getResources().getColor(R.color.vpn_text_primary));
+            ivConnectRing.setImageResource(R.drawable.ring_connect_idle);
+            btnConnect.setColorFilter(getResources().getColor(R.color.vpn_blue));
+            btnConnect.setContentDescription(getString(R.string.tap_to_connect));
+            // Stop the connection timer
+            timerHandler.removeCallbacks(timerRunnable);
+            if (tvConnectionTimer != null) {
+                tvConnectionTimer.setVisibility(View.GONE);
+            }
         }
     }
     
@@ -361,7 +456,9 @@ public class HomeFragment extends Fragment implements ConnectionManager.NetworkC
     @Override
     public void onDestroy() {
         super.onDestroy();
-        
+
+        timerHandler.removeCallbacks(timerRunnable);
+
         if (connectionManager != null) {
             connectionManager.removeCallback(this);
             connectionManager.destroy();
@@ -371,9 +468,8 @@ public class HomeFragment extends Fragment implements ConnectionManager.NetworkC
             getContext().unregisterReceiver(vpnReceiver);
         }
 
-        if (getContext() != null) {
-            // Make sure any active tunnel is stopped
-            try { EmbeddedOpenVpnConnector.getInstance().disconnect(getContext()); } catch (Exception ignored) {}
-        }
+        // NOTE: do NOT disconnect the tunnel here. The VPN must survive tab
+        // switches and rotation; it stops only on explicit user Disconnect
+        // (btnConnect) or process death.
     }
 }

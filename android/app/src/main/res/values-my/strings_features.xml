@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Feature strings (Burmese). Matches values/strings_features.xml key-for-key. -->
+<resources>
+    <!-- Speed test -->
+    <string name="speed_test_title">မြန်နှုန်းစမ်းသပ်မှု</string>
+    <string name="speed_download">ဒေါင်းလုဒ်</string>
+    <string name="speed_upload">အပ်လုဒ်</string>
+    <string name="speed_ping">ပင့်</string>
+    <string name="speed_test_again">ထပ်စမ်းမည်</string>
+    <string name="speed_test_server">စမ်းသပ်ဆာဗာ</string>
+    <string name="speed_history">လတ်တလော စမ်းသပ်ချက်များ</string>
+
+    <!-- Connection history -->
+    <string name="connection_history_title">ချိတ်ဆက်မှု မှတ်တမ်း</string>
+    <string name="history_empty">ချိတ်ဆက်မှုမှတ်တမ်း မရှိသေးပါ</string>
+    <string name="history_status_connected">ချိတ်ဆက်ထားသည်</string>
+    <string name="history_status_disconnected">ပြတ်တောက်သွားသည်</string>
+
+    <!-- Settings -->
+    <string name="settings_title">ဆက်တင်များ</string>
+    <string name="settings_auto_connect">အလိုအလျောက် ချိတ်ဆက်ခြင်း</string>
+    <string name="settings_auto_connect_desc">အက်ပ်ဖွင့်တိုင်း အလိုအလျောက် ပြန်ချိတ်ဆက်မည်</string>
+    <string name="settings_kill_switch">Kill Switch</string>
+    <string name="settings_kill_switch_desc">VPN မတော်တဆ ပြတ်လျှင် အင်တာနက်ကို ပိတ်ထားမည်</string>
+    <string name="settings_notifications">အသိပေးချက်များ</string>
+    <string name="settings_notifications_desc">ချိတ်ဆက်မှု အခြေအနေ အသိပေးချက်များ ပြသမည်</string>
+    <string name="settings_protocol">ပရိုတိုကော</string>
+    <string name="settings_protocol_value">OpenVPN (UDP)</string>
+    <string name="settings_dns">DNS</string>
+    <string name="settings_dns_value">အလိုအလျောက် (1.1.1.1)</string>
+    <string name="notifications_permission_denied">အသိပေးချက် ခွင့်ပြုချက် မရရှိပါ — အသိပေးချက်များ ပိတ်ထားပါမည်</string>
+
+    <!-- Kill switch -->
+    <string name="kill_switch_title">VPN ချိတ်ဆက်မှု ပြတ်တောက်သွားပါပြီ</string>
+    <string name="kill_switch_blocking">Kill Switch က အင်တာနက်ကို ပိတ်ထားပါတယ်</string>
+    <string name="kill_switch_notif_title">Kill Switch အသက်ဝင်နေပါတယ်</string>
+    <string name="kill_switch_notif_text">VPN ပြတ်သွားပါပြီ — အင်တာနက် ပိတ်ထားပါတယ်</string>
+    <string name="kill_switch_channel_name">Kill Switch သတိပေးချက်များ</string>
+    <string name="kill_switch_channel_desc">VPN မတော်တဆ ပြတ်လျှင် သတိပေးမည်</string>
+    <string name="reconnect">ပြန်ချိတ်ဆက်မည်</string>
+    <string name="dismiss">ပိတ်မည်</string>
+</resources>
