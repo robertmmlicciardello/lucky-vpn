@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- P1: Notifications -->
+    <string name="p1_notifications">Notifications</string>
+    <string name="p1_no_notifications">No notifications yet</string>
+    <string name="p1_notif_badge_desc">Notifications</string>
+    <!-- P1: Support -->
+    <string name="p1_support">Support</string>
+    <string name="p1_new_ticket">New Ticket</string>
+    <string name="p1_subject">Subject</string>
+    <string name="p1_subject_hint">Brief summary of your issue</string>
+    <string name="p1_category">Category</string>
+    <string name="p1_message">Message</string>
+    <string name="p1_message_hint">Describe your issue in detail</string>
+    <string name="p1_submit">Submit</string>
+    <string name="p1_your_tickets">Your Tickets</string>
+    <string name="p1_no_tickets">No tickets yet</string>
+    <string name="p1_cat_general">General</string>
+    <string name="p1_cat_billing">Billing</string>
+    <string name="p1_cat_technical">Technical</string>
+    <string name="p1_status_open">Open</string>
+    <string name="p1_status_answered">Answered</string>
+    <string name="p1_status_in_progress">In Progress</string>
+    <string name="p1_status_closed">Closed</string>
+    <string name="p1_admin_response">Admin response</string>
+    <string name="p1_ticket_sent">Ticket submitted successfully</string>
+    <string name="p1_fill_all_fields">Please fill in all fields</string>
+    <!-- P1: shared -->
+    <string name="p1_login_required">Please log in to view this</string>
+    <string name="p1_login">Log In</string>
+</resources>

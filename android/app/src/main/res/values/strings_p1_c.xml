@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P1 feature strings (English). Matches values-my/strings_p1_c.xml key-for-key. -->
+<resources>
+    <!-- Blog / announcements -->
+    <string name="blog_title">News &amp; Announcements</string>
+    <string name="blog_subtitle">Latest updates from Lucky VPN</string>
+    <string name="blog_detail_title">Announcement</string>
+    <string name="blog_login_required">Please log in to read the announcements.</string>
+    <string name="blog_go_to_login">Log In</string>
+    <string name="blog_empty">No announcements yet.</string>
+    <string name="blog_load_error">Could not load the post.</string>
+    <string name="blog_back">Back</string>
+
+    <!-- Leaderboard -->
+    <string name="leaderboard_title">Leaderboard</string>
+    <string name="leaderboard_my_rank_loading">Loading your rank…</string>
+    <string name="leaderboard_my_rank">My Rank #%1$d • %2$d pts</string>
+    <string name="leaderboard_points_value">%1$d pts</string>
+    <string name="leaderboard_empty">No rankings yet.</string>
+</resources>

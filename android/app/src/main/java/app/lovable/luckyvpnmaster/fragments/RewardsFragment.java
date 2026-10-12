@@ -10,14 +10,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import app.lovable.luckyvpnmaster.R;
 import app.lovable.luckyvpnmaster.adapters.RewardAdapter;
+import app.lovable.luckyvpnmaster.adapters.RewardTransactionAdapter;
+import app.lovable.luckyvpnmaster.api.ApiClient;
 import app.lovable.luckyvpnmaster.auth.AuthManager;
 import app.lovable.luckyvpnmaster.models.User;
 import app.lovable.luckyvpnmaster.models.RewardItem;
+import app.lovable.luckyvpnmaster.models.RewardTransaction;
 import app.lovable.luckyvpnmaster.rewards.RewardsManager;
 
 public class RewardsFragment extends Fragment {
@@ -27,6 +33,12 @@ public class RewardsFragment extends Fragment {
     private RewardAdapter rewardAdapter;
     private AuthManager authManager;
     private RewardsManager rewardsManager;
+
+    // P1: reward history section (visible only when logged in)
+    private View historySection;
+    private RecyclerView recyclerHistory;
+    private TextView tvHistoryEmpty;
+    private RewardTransactionAdapter historyAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -40,8 +52,16 @@ public class RewardsFragment extends Fragment {
         setupRecyclerView();
         loadUserPoints();
         loadRewardItems();
+        setupHistorySection();
         
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadUserPoints();
+        loadRewardHistory();
     }
 
     private void initViews(View view) {
@@ -50,6 +70,10 @@ public class RewardsFragment extends Fragment {
         btnWatchAd = view.findViewById(R.id.btn_watch_ad);
         btnLuckyWheel = view.findViewById(R.id.btn_lucky_wheel);
         recyclerView = view.findViewById(R.id.recycler_view);
+        // P1: history section views
+        historySection = view.findViewById(R.id.history_section);
+        recyclerHistory = view.findViewById(R.id.recycler_history);
+        tvHistoryEmpty = view.findViewById(R.id.tv_history_empty);
     }
 
     private void setupClickListeners() {
@@ -74,6 +98,51 @@ public class RewardsFragment extends Fragment {
         }
     }
 
+    /** P1: history section setup — hidden for guests / logged-out users. */
+    private void setupHistorySection() {
+        if (historySection == null) return;
+        if (!authManager.isLoggedIn()) {
+            historySection.setVisibility(View.GONE);
+            return;
+        }
+        historySection.setVisibility(View.VISIBLE);
+        recyclerHistory.setLayoutManager(new LinearLayoutManager(getContext()));
+        historyAdapter = new RewardTransactionAdapter(getContext());
+        recyclerHistory.setAdapter(historyAdapter);
+        loadRewardHistory();
+    }
+
+    /** P1: GET /rewards/ — user reward transaction history. */
+    private void loadRewardHistory() {
+        if (historyAdapter == null || !authManager.isLoggedIn()) return;
+        ApiClient.get(getContext(), "/rewards/", new ApiClient.Callback() {
+            @Override
+            public void onSuccess(JSONObject data) {
+                List<RewardTransaction> txns = new ArrayList<>();
+                JSONArray arr = data.optJSONArray("data");
+                if (arr == null) arr = data.optJSONArray("transactions");
+                if (arr != null) {
+                    for (int i = 0; i < arr.length(); i++) {
+                        JSONObject o = arr.optJSONObject(i);
+                        if (o != null) txns.add(RewardTransaction.fromJson(o));
+                    }
+                }
+                if (getActivity() == null) return;
+                getActivity().runOnUiThread(() -> {
+                    historyAdapter.updateTransactions(txns);
+                    if (tvHistoryEmpty != null) {
+                        tvHistoryEmpty.setVisibility(txns.isEmpty() ? View.VISIBLE : View.GONE);
+                    }
+                });
+            }
+
+            @Override
+            public void onError(String error) {
+                // keep the section quiet on error; points/earn buttons still work
+            }
+        });
+    }
+
     private void loadRewardItems() {
         List<RewardItem> items = new ArrayList<>();
         items.add(new RewardItem("Daily Check-in", "Get 100 points", 100, R.drawable.ic_calendar));
@@ -94,6 +163,7 @@ public class RewardsFragment extends Fragment {
                     getActivity().runOnUiThread(() -> {
                         Toast.makeText(getContext(), "Daily check-in successful! +" + pointsEarned + " points", Toast.LENGTH_SHORT).show();
                         loadUserPoints();
+                        loadRewardHistory();
                     });
                 }
             }
@@ -121,6 +191,7 @@ public class RewardsFragment extends Fragment {
                     getActivity().runOnUiThread(() -> {
                         Toast.makeText(getContext(), "Ad watched! +" + pointsEarned + " points", Toast.LENGTH_SHORT).show();
                         loadUserPoints();
+                        loadRewardHistory();
                     });
                 }
             }

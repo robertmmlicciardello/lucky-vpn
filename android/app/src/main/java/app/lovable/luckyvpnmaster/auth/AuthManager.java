@@ -204,6 +204,17 @@ public class AuthManager {
         return user;
     }
 
+    /**
+     * P1: refresh the cached plan/points from a server profile fetch so every
+     * screen that reads getCurrentUser() stays consistent. Additive only.
+     */
+    public void updateCachedProfile(String plan, int points) {
+        SharedPreferences.Editor editor = prefs.edit();
+        if (plan != null) editor.putString(KEY_USER_PLAN, plan);
+        editor.putInt(KEY_USER_POINTS, points);
+        editor.apply();
+    }
+
     public void logout() {
         SharedPreferences.Editor editor = prefs.edit();
         editor.clear();

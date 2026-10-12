@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- P1: Notifications -->
+    <string name="p1_notifications">အသိပေးချက်များ</string>
+    <string name="p1_no_notifications">အသိပေးချက်များ မရှိသေးပါ</string>
+    <string name="p1_notif_badge_desc">အသိပေးချက်များ</string>
+    <!-- P1: Support -->
+    <string name="p1_support">အကူအညီ</string>
+    <string name="p1_new_ticket">တိုင်ကြားချက် အသစ်</string>
+    <string name="p1_subject">ခေါင်းစဉ်</string>
+    <string name="p1_subject_hint">ပြဿနာကို အကျဉ်းချုပ် ရေးပါ</string>
+    <string name="p1_category">အမျိုးအစား</string>
+    <string name="p1_message">မက်ဆေ့ချ်</string>
+    <string name="p1_message_hint">ပြဿနာကို အသေးစိတ် ရေးပါ</string>
+    <string name="p1_submit">ပို့ရန်</string>
+    <string name="p1_your_tickets">သင့်တိုင်ကြားချက်များ</string>
+    <string name="p1_no_tickets">တိုင်ကြားချက်များ မရှိသေးပါ</string>
+    <string name="p1_cat_general">အထွေထွေ</string>
+    <string name="p1_cat_billing">ငွေပေးချေမှု</string>
+    <string name="p1_cat_technical">နည်းပညာ</string>
+    <string name="p1_status_open">ဖွင့်ထားဆဲ</string>
+    <string name="p1_status_answered">ဖြေကြားပြီး</string>
+    <string name="p1_status_in_progress">ဆောင်ရွက်ဆဲ</string>
+    <string name="p1_status_closed">ပိတ်ထား</string>
+    <string name="p1_admin_response">စီမံခန့်ခွဲသူ၏ ဖြေကြားချက်</string>
+    <string name="p1_ticket_sent">တိုင်ကြားချက် ပို့ပြီးပါပြီ</string>
+    <string name="p1_fill_all_fields">အကွက်အားလုံး ဖြည့်ပေးပါ</string>
+    <!-- P1: shared -->
+    <string name="p1_login_required">ကြည့်ရှုရန် လော့ဂ်အင် ဝင်ပေးပါ</string>
+    <string name="p1_login">လော့ဂ်အင်</string>
+</resources>

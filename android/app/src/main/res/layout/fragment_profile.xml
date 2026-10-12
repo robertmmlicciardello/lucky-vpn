@@ -208,6 +208,108 @@
                 android:background="@color/vpn_divider"
                 android:layout_marginHorizontal="16dp" />
 
+            <!-- P1: My Payments -->
+            <LinearLayout
+                android:id="@+id/row_payments"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/p1b_menu_my_payments"
+                    android:textSize="15sp"
+                    android:textColor="@color/vpn_text_primary" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_chevron_right"
+                    android:tint="@color/vpn_text_secondary" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/vpn_divider"
+                android:layout_marginHorizontal="16dp" />
+
+            <!-- P1: News & Announcements -->
+            <LinearLayout
+                android:id="@+id/row_blog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/p1b_menu_blog"
+                    android:textSize="15sp"
+                    android:textColor="@color/vpn_text_primary" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_chevron_right"
+                    android:tint="@color/vpn_text_secondary" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/vpn_divider"
+                android:layout_marginHorizontal="16dp" />
+
+            <!-- P1: Leaderboard -->
+            <LinearLayout
+                android:id="@+id/row_leaderboard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/p1b_menu_leaderboard"
+                    android:textSize="15sp"
+                    android:textColor="@color/vpn_text_primary" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_chevron_right"
+                    android:tint="@color/vpn_text_secondary" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/vpn_divider"
+                android:layout_marginHorizontal="16dp" />
+
             <LinearLayout
                 android:id="@+id/row_help"
                 android:layout_width="match_parent"

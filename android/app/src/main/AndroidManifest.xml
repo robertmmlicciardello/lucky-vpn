@@ -58,6 +58,12 @@
             android:exported="false"
             android:theme="@style/AppTheme.NoActionBar" />
 
+        <!-- P1: Payment history ("My Payments") -->
+        <activity
+            android:name=".PaymentHistoryActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <!-- Feature: Settings -->
         <activity
             android:name=".SettingsActivity"
@@ -67,6 +73,18 @@
         <!-- Feature: Kill Switch warning -->
         <activity
             android:name=".KillSwitchActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <!-- P1: Support tickets -->
+        <activity
+            android:name=".SupportActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme" />
+
+        <!-- P1: Blog post detail -->
+        <activity
+            android:name=".BlogDetailActivity"
             android:exported="false"
             android:theme="@style/AppTheme.NoActionBar" />
 

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P1 feature strings (Burmese). Matches values/strings_p1_c.xml key-for-key. -->
+<resources>
+    <!-- Blog / announcements -->
+    <string name="blog_title">သတင်းနှင့် ကြေညာချက်များ</string>
+    <string name="blog_subtitle">Lucky VPN မှ နောက်ဆုံးရ သတင်းများ</string>
+    <string name="blog_detail_title">ကြေညာချက်</string>
+    <string name="blog_login_required">ကြေညာချက်များ ဖတ်ရန် အကောင့်ဝင်ပေးပါ။</string>
+    <string name="blog_go_to_login">ဝင်မည်</string>
+    <string name="blog_empty">ကြေညာချက်များ မရှိသေးပါ။</string>
+    <string name="blog_load_error">စာမျက်နှာကို ဖွင့်၍ မရပါ။</string>
+    <string name="blog_back">နောက်သို့</string>
+
+    <!-- Leaderboard -->
+    <string name="leaderboard_title">အဆင့်သတ်မှတ်ချက်</string>
+    <string name="leaderboard_my_rank_loading">သင့်အဆင့် ရှာနေပါသည်…</string>
+    <string name="leaderboard_my_rank">သင့်အဆင့် #%1$d • %2$d မှတ်</string>
+    <string name="leaderboard_points_value">%1$d မှတ်</string>
+    <string name="leaderboard_empty">အဆင့်သတ်မှတ်ချက် မရှိသေးပါ။</string>
+</resources>

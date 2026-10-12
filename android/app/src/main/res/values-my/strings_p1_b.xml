@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P1 feature strings (Burmese). Matches values/strings_p1_b.xml key-for-key. -->
+<resources>
+    <!-- My Payments -->
+    <string name="p1b_my_payments">ကျွန်ုပ်၏ ငွေပေးချေမှုများ</string>
+    <string name="p1b_login_required">အကောင့်ဝင်ရန် လိုအပ်ပါသည်</string>
+    <string name="p1b_login_required_desc">ငွေပေးချေမှု မှတ်တမ်းကြည့်ရန် အကောင့်ဝင်ပေးပါ။</string>
+    <string name="p1b_go_to_login">အကောင့်ဝင်မည်</string>
+    <string name="p1b_payment_empty">ငွေပေးချေမှု မှတ်တမ်း မရှိသေးပါ</string>
+    <string name="p1b_payment_plan">အစီအစဉ်: %1$s</string>
+    <string name="p1b_payment_method">ငွေပေးနည်း: %1$s</string>
+    <string name="p1b_payment_txn">ငွေလွှဲအမှတ်: %1$s</string>
+    <string name="p1b_status_pending">စောင့်ဆိုင်းနေသည်</string>
+    <string name="p1b_status_approved">အတည်ပြုပြီးသည်</string>
+    <string name="p1b_status_rejected">ငြင်းပယ်ထားသည်</string>
+
+    <!-- Rewards history -->
+    <string name="p1b_reward_history">မှတ်တမ်း</string>
+    <string name="p1b_reward_history_empty">ဆုလာဘ် မှတ်တမ်း မရှိသေးပါ</string>
+    <string name="p1b_reward_type_daily">နေ့စဉ်</string>
+    <string name="p1b_reward_type_ad">ကြော်ငြာ</string>
+    <string name="p1b_reward_type_referral">ဖိတ်ခေါ်ခြင်း</string>
+    <string name="p1b_reward_type_bonus">ဘောနပ်</string>
+
+    <!-- Profile menu -->
+    <string name="p1b_menu_my_payments">ကျွန်ုပ်၏ ငွေပေးချေမှုများ</string>
+    <string name="p1b_menu_blog">သတင်းနှင့် ကြေညာချက်များ</string>
+    <string name="p1b_menu_leaderboard">အဆင့်စာရင်း</string>
+    <string name="p1b_premium_active">Premium သက်ဝင်နေပါသည် — ပိုမြန်ပြီး ကန့်သတ်ချက်မဲ့ VPN ကို သုံးလိုက်ပါ</string>
+
+    <!-- Privacy / About dialogs -->
+    <string name="p1b_privacy_title">ကိုယ်ရေးအချက်အလက် မူဝါဒ</string>
+    <string name="p1b_privacy_text">Lucky VPN သည် သင်၏ အင်တာနက်အသုံးပြုမှုကို စောင့်ကြည့်ခြင်း၊ မှတ်တမ်းတင်ခြင်း မလုပ်ပါ။ သင့်အကောင့် အချက်အလက် (အီးမေးလ်နှင့် အမှတ်) ကို အက်ပ်လည်ပတ်ရန်အတွက်သာ သုံးပါသည်။ ငွေပေးချေမှု screenshot များကို ကျွန်ုပ်တို့ အဖွဲ့က ကိုယ်တိုင် စစ်ဆေးပြီး ပြင်ပသို့ မျှဝေခြင်း မရှိပါ။</string>
+    <string name="p1b_about_title">Lucky VPN အကြောင်း</string>
+    <string name="p1b_about_text">Lucky VPN သည် မြန်မာအသုံးပြုသူများအတွက် မြန်ဆန်လုံခြုံသော VPN ဖြစ်သည်။ အမှတ်စု၍ premium ဆာဗာများ ဖွင့်ပြီး အွန်လိုင်းတွင် လုံခြုံစွာနေပါ။ အကူအညီလိုအပ်ပါက Help &amp; Support မှ ဆက်သွယ်ပါ။</string>
+    <string name="p1b_dialog_close">ပိတ်မည်</string>
+</resources>

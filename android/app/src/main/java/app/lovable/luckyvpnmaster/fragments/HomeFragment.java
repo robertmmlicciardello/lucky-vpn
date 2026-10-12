@@ -16,7 +16,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
+import org.json.JSONObject;
 import app.lovable.luckyvpnmaster.R;
+import app.lovable.luckyvpnmaster.api.ApiClient;
+import app.lovable.luckyvpnmaster.fragments.NotificationsFragment;
 import app.lovable.luckyvpnmaster.vpn.EmbeddedOpenVpnConnector;
 // WireGuard temporarily disabled (see build.gradle)
 // import app.lovable.luckyvpnmaster.vpn.WireGuardConnector;
@@ -56,6 +59,9 @@ public class HomeFragment extends Fragment implements ConnectionManager.NetworkC
     private FrameLayout loadingContainer;
     private ImageView loadingAnimation;
     private LinearLayout connectionStatusLayout;
+    // P1: notifications bell + unread badge (added, existing logic untouched)
+    private FrameLayout notifBellContainer;
+    private TextView tvNotifBadge;
     private ConnectionManager connectionManager;
     private VPNConnectionReceiver vpnReceiver;
     private String activeProtocol = null; // "openvpn" (wireguard planned)
@@ -134,7 +140,52 @@ public class HomeFragment extends Fragment implements ConnectionManager.NetworkC
 
         return view;
     }
-    
+
+    // P1: refresh the unread-notifications badge whenever Home is shown.
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (tvNotifBadge == null) return;
+        if (authManager != null && authManager.isLoggedIn()) {
+            loadUnreadBadgeCount();
+        } else {
+            tvNotifBadge.setVisibility(View.GONE);
+        }
+    }
+
+    private void loadUnreadBadgeCount() {
+        if (getContext() == null) return;
+        ApiClient.get(getContext(), "/notifications", new ApiClient.Callback() {
+            @Override
+            public void onSuccess(JSONObject data) {
+                if (getActivity() == null) return;
+                int unread = 0;
+                org.json.JSONArray arr = data.optJSONArray("data");
+                if (arr != null) {
+                    for (int i = 0; i < arr.length(); i++) {
+                        org.json.JSONObject obj = arr.optJSONObject(i);
+                        if (obj != null && !obj.optBoolean("is_read", false)) unread++;
+                    }
+                }
+                final int count = unread;
+                getActivity().runOnUiThread(() -> {
+                    if (tvNotifBadge == null) return;
+                    if (count > 0) {
+                        tvNotifBadge.setText(count > 99 ? "99+" : String.valueOf(count));
+                        tvNotifBadge.setVisibility(View.VISIBLE);
+                    } else {
+                        tvNotifBadge.setVisibility(View.GONE);
+                    }
+                });
+            }
+
+            @Override
+            public void onError(String error) {
+                // Badge simply stays hidden on failure; never blocks the home screen.
+            }
+        });
+    }
+
     private void initializeNetworkManager() {
         connectionManager = new ConnectionManager(getContext());
         connectionManager.addCallback(this);
@@ -168,6 +219,20 @@ public class HomeFragment extends Fragment implements ConnectionManager.NetworkC
         loadingContainer = view.findViewById(R.id.loading_container);
         loadingAnimation = view.findViewById(R.id.iv_loading_animation);
         connectionStatusLayout = view.findViewById(R.id.connection_status_layout);
+
+        // P1: notifications bell + unread badge
+        notifBellContainer = view.findViewById(R.id.layout_notif_bell);
+        tvNotifBadge = view.findViewById(R.id.tv_notif_badge);
+        if (notifBellContainer != null) {
+            notifBellContainer.setOnClickListener(v -> {
+                if (getParentFragmentManager() != null) {
+                    getParentFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, new NotificationsFragment())
+                            .addToBackStack(null)
+                            .commit();
+                }
+            });
+        }
         
         Button retryButton = view.findViewById(R.id.btn_retry);
         if (retryButton != null) {

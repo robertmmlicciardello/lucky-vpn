@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P1 feature strings (English). New file to avoid conflicts. -->
+<resources>
+    <!-- My Payments -->
+    <string name="p1b_my_payments">My Payments</string>
+    <string name="p1b_login_required">Login Required</string>
+    <string name="p1b_login_required_desc">Please log in to view your payment history.</string>
+    <string name="p1b_go_to_login">Log In</string>
+    <string name="p1b_payment_empty">No payments yet</string>
+    <string name="p1b_payment_plan">Plan: %1$s</string>
+    <string name="p1b_payment_method">Method: %1$s</string>
+    <string name="p1b_payment_txn">Txn: %1$s</string>
+    <string name="p1b_status_pending">Pending</string>
+    <string name="p1b_status_approved">Approved</string>
+    <string name="p1b_status_rejected">Rejected</string>
+
+    <!-- Rewards history -->
+    <string name="p1b_reward_history">History</string>
+    <string name="p1b_reward_history_empty">No reward activity yet</string>
+    <string name="p1b_reward_type_daily">Daily</string>
+    <string name="p1b_reward_type_ad">Ad</string>
+    <string name="p1b_reward_type_referral">Referral</string>
+    <string name="p1b_reward_type_bonus">Bonus</string>
+
+    <!-- Profile menu -->
+    <string name="p1b_menu_my_payments">My Payments</string>
+    <string name="p1b_menu_blog">News &amp; Announcements</string>
+    <string name="p1b_menu_leaderboard">Leaderboard</string>
+    <string name="p1b_premium_active">Premium active — enjoy faster, unlimited VPN</string>
+
+    <!-- Privacy / About dialogs -->
+    <string name="p1b_privacy_title">Privacy Policy</string>
+    <string name="p1b_privacy_text">Lucky VPN does not track or log your browsing activity. Your account data (email and points) is used only to run the app. Payment screenshots are verified manually by our team and never shared with third parties.</string>
+    <string name="p1b_about_title">About Lucky VPN</string>
+    <string name="p1b_about_text">Lucky VPN is a fast, secure VPN built for Myanmar users. Earn points, unlock premium servers, and stay safe online. Contact support anytime from the Help &amp; Support section.</string>
+    <string name="p1b_dialog_close">Close</string>
+</resources>
