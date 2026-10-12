@@ -63,7 +63,7 @@ router.post('/register', [
     throw new AppError('Validation failed', 400);
   }
 
-  const { name, email, password, phone } = req.body;
+  const { name, email, password, phone, referral_code } = req.body;
 
   const existingUser = await User.findOne({ where: { email } });
   if (existingUser) {
@@ -71,7 +71,24 @@ router.post('/register', [
   }
 
   const hashedPassword = await bcrypt.hash(password, 12);
-  
+
+  // Generate a unique referral code for the new user
+  const crypto = require('crypto');
+  let newReferralCode = null;
+  for (let i = 0; i < 5 && !newReferralCode; i++) {
+    const candidate = crypto.randomBytes(4).toString('hex').toUpperCase();
+    const clash = await User.findOne({ where: { referral_code: candidate } });
+    if (!clash) newReferralCode = candidate;
+  }
+
+  // Resolve referrer (optional)
+  let referrer = null;
+  if (referral_code) {
+    referrer = await User.findOne({
+      where: { referral_code: String(referral_code).toUpperCase().trim() }
+    });
+  }
+
   const user = await User.create({
     name,
     email,
@@ -79,8 +96,23 @@ router.post('/register', [
     phone: phone || null,
     plan: 'free',
     points: 0,
-    status: 'active'
+    status: 'active',
+    referral_code: newReferralCode,
+    referred_by: referrer ? referrer.id : null
   });
+
+  // Award the referrer 500 pts for the invite
+  if (referrer) {
+    const { Reward } = require('../models');
+    await Reward.create({
+      user_id: referrer.id,
+      type: 'invite',
+      points: 500,
+      description: `Invited ${name} (${email})`
+    });
+    await referrer.increment('points', { by: 500 });
+    logger.info('Invite reward granted', { referrerId: referrer.id, newUserId: user.id });
+  }
 
   const token = jwt.sign(
     { id: user.id, email: user.email },
