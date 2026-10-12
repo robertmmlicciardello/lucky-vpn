@@ -22,6 +22,7 @@ public class AuthManager {
     private static final String KEY_USER_EMAIL = "user_email";
     private static final String KEY_USER_PLAN = "user_plan";
     private static final String KEY_USER_POINTS = "user_points";
+    private static final String KEY_USER_REFERRAL = "user_referral_code";
     private static final String KEY_GUEST_MODE = "guest_mode";
     
     private Context context;
@@ -158,6 +159,9 @@ public class AuthManager {
         editor.putString(KEY_USER_EMAIL, userData.getString("email"));
         editor.putString(KEY_USER_PLAN, userData.optString("plan", "free"));
         editor.putInt(KEY_USER_POINTS, userData.optInt("points", 0));
+        String referral = userData.optString("referral_code", "");
+        if (referral.isEmpty()) referral = userData.optString("referralCode", "");
+        if (!referral.isEmpty()) editor.putString(KEY_USER_REFERRAL, referral);
         editor.apply();
     }
 
@@ -168,6 +172,9 @@ public class AuthManager {
         user.email = userData.getString("email");
         user.plan = userData.optString("plan", "free");
         user.points = userData.optInt("points", 0);
+        String referral = userData.optString("referral_code", "");
+        if (referral.isEmpty()) referral = userData.optString("referralCode", "");
+        user.referralCode = referral;
         return user;
     }
 
@@ -186,6 +193,16 @@ public class AuthManager {
 
     public boolean isGuest() {
         return prefs.getBoolean(KEY_GUEST_MODE, false);
+    }
+
+    /**
+     * AdMob/Billing helper: true when the cached plan grants premium
+     * (ads hidden, interstitials skipped). Reads the cached plan only —
+     * never hits the network.
+     */
+    public boolean isPremium() {
+        String plan = prefs.getString(KEY_USER_PLAN, "free");
+        return plan != null && plan.toLowerCase().contains("premium");
     }
 
     public String getAccessToken() {
@@ -213,6 +230,16 @@ public class AuthManager {
         if (plan != null) editor.putString(KEY_USER_PLAN, plan);
         editor.putInt(KEY_USER_POINTS, points);
         editor.apply();
+    }
+
+    /** Cached referral code (populated from login/register or /users/profile). */
+    public String getReferralCode() {
+        return prefs.getString(KEY_USER_REFERRAL, "");
+    }
+
+    /** Store a referral code fetched from the server (e.g. /users/profile). */
+    public void saveReferralCode(String code) {
+        if (code != null) prefs.edit().putString(KEY_USER_REFERRAL, code).apply();
     }
 
     public void logout() {

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Rewards & Games strings (English). Matches values-my/strings_rewards.xml key-for-key. -->
+<resources>
+    <!-- Rewards screen -->
+    <string name="rewards_your_points">Your Points</string>
+    <string name="rewards_earn_more">Earn More Points</string>
+    <string name="rewards_quick_checkin">Daily\nCheck-in</string>
+    <string name="rewards_quick_video">Watch\nVideo</string>
+    <string name="rewards_quick_wheel">Lucky\nWheel</string>
+
+    <!-- Reward grid items -->
+    <string name="reward_item_daily_title">Daily Check-in</string>
+    <string name="reward_item_daily_desc">Get 100 points</string>
+    <string name="reward_item_video_title">Watch Video</string>
+    <string name="reward_item_video_desc">Get 50 points</string>
+    <string name="reward_item_wheel_title">Lucky Wheel</string>
+    <string name="reward_item_wheel_desc">Win up to 1000 points</string>
+    <string name="reward_item_share_title">Share App</string>
+    <string name="reward_item_share_desc">Get 200 points</string>
+    <string name="reward_item_rate_title">Rate App</string>
+    <string name="reward_item_rate_desc">Get 300 points</string>
+    <string name="reward_item_invite_title">Invite Friend</string>
+    <string name="reward_item_invite_desc">Get 500 points</string>
+    <string name="reward_points_format">+%1$d points</string>
+    <string name="reward_surprise">Surprise points</string>
+
+    <!-- Lucky wheel -->
+    <string name="wheel_title">Lucky Wheel</string>
+    <string name="wheel_spin">SPIN</string>
+    <string name="wheel_spinning">Spinning…</string>
+    <string name="wheel_result_title">You Won!</string>
+    <string name="wheel_result_points">+%1$d points</string>
+    <string name="wheel_cooldown">Spin again in %1$s</string>
+    <string name="wheel_once_hour">The wheel can be spun once per hour.</string>
+
+    <!-- Share app -->
+    <string name="share_title">Share Lucky VPN</string>
+    <string name="share_text">Try Lucky VPN — fast &amp; secure VPN for Myanmar!\nGet it here: https://play.google.com/store/apps/details?id=app.lovable.luckyvpnmaster\nUse my code %1$s when you sign up for bonus points!</string>
+    <string name="share_success">Thanks for sharing! +%1$d points</string>
+
+    <!-- Rate app -->
+    <string name="rate_success">Thanks for rating! +%1$d points</string>
+    <string name="rate_opening">Opening Play Store…</string>
+
+    <!-- Invite -->
+    <string name="invite_title">Invite Friends</string>
+    <string name="invite_explain">Share your code with friends. When they sign up with it, you get 500 points!</string>
+    <string name="invite_your_code">Your referral code</string>
+    <string name="invite_copy">Copy</string>
+    <string name="invite_share">Share</string>
+    <string name="invite_copied">Code copied</string>
+    <string name="invite_loading">Loading your code…</string>
+    <string name="invite_share_text">Join Lucky VPN with my code %1$s and we both get bonus points!\nhttps://play.google.com/store/apps/details?id=app.lovable.luckyvpnmaster</string>
+    <string name="invite_close">Close</string>
+
+    <!-- Redeem -->
+    <string name="redeem_title">Redeem Rewards</string>
+    <string name="redeem_premium7_title">7 Days Premium</string>
+    <string name="redeem_premium7_desc">Spend 1000 points</string>
+    <string name="redeem_cta">Redeem</string>
+    <string name="redeem_confirm_title">Redeem 7 Days Premium?</string>
+    <string name="redeem_confirm_msg">Spend 1000 points to activate 7 days of Premium?</string>
+    <string name="redeem_success">Premium activated until %1$s</string>
+    <string name="redeem_insufficient">Not enough points — you need 1000.</string>
+
+    <!-- Common -->
+    <string name="dialog_confirm">Confirm</string>
+    <string name="login_to_earn">Please log in to earn rewards.</string>
+</resources>

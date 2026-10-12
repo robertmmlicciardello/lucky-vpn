@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Rewards & Games strings (Burmese). Matches values/strings_rewards.xml key-for-key. -->
+<resources>
+    <!-- Rewards screen -->
+    <string name="rewards_your_points">သင့်အမှတ်များ</string>
+    <string name="rewards_earn_more">အမှတ်များ ပိုမိုရယူရန်</string>
+    <string name="rewards_quick_checkin">နေ့စဉ်\nစစ်ဆေးခြင်း</string>
+    <string name="rewards_quick_video">ဗီဒီယို\nကြည့်ရန်</string>
+    <string name="rewards_quick_wheel">ကံကောင်း\nဘီး</string>
+
+    <!-- Reward grid items -->
+    <string name="reward_item_daily_title">နေ့စဉ် စစ်ဆေးခြင်း</string>
+    <string name="reward_item_daily_desc">100 မှတ် ရယူရန်</string>
+    <string name="reward_item_video_title">ဗီဒီယို ကြည့်ရန်</string>
+    <string name="reward_item_video_desc">50 မှတ် ရယူရန်</string>
+    <string name="reward_item_wheel_title">ကံကောင်း ဘီး</string>
+    <string name="reward_item_wheel_desc">1000 မှတ်အထိ ရနိုင်သည်</string>
+    <string name="reward_item_share_title">အက်ပ် မျှဝေရန်</string>
+    <string name="reward_item_share_desc">200 မှတ် ရယူရန်</string>
+    <string name="reward_item_rate_title">အက်ပ်ကို အဆင့်သတ်မှတ်ရန်</string>
+    <string name="reward_item_rate_desc">300 မှတ် ရယူရန်</string>
+    <string name="reward_item_invite_title">သူငယ်ချင်း ဖိတ်ခေါ်ရန်</string>
+    <string name="reward_item_invite_desc">500 မှတ် ရယူရန်</string>
+    <string name="reward_points_format">+%1$d မှတ်</string>
+    <string name="reward_surprise">အံ့အားသင့်ဖွယ် အမှတ်များ</string>
+
+    <!-- Lucky wheel -->
+    <string name="wheel_title">ကံကောင်းဘီး</string>
+    <string name="wheel_spin">လှည့်ရန်</string>
+    <string name="wheel_spinning">လှည့်နေသည်…</string>
+    <string name="wheel_result_title">ရလိုက်ပြီ!</string>
+    <string name="wheel_result_points">+%1$d မှတ်</string>
+    <string name="wheel_cooldown">ထပ်လှည့်ရန် %1$s စောင့်ပါ</string>
+    <string name="wheel_once_hour">ကံကောင်းဘီးကို တစ်နာရီလျှင် တစ်ကြိမ်သာ လှည့်နိုင်ပါသည်။</string>
+
+    <!-- Share app -->
+    <string name="share_title">Lucky VPN မျှဝေရန်</string>
+    <string name="share_text">Lucky VPN ကို သုံးကြည့်ပါ — မြန်မာအတွက် မြန်ဆန်လုံခြုံသော VPN!\nဒီမှာ ရယူပါ: https://play.google.com/store/apps/details?id=app.lovable.luckyvpnmaster\nအကောင့်ဖွင့်တဲ့အခါ ကျွန်တော့်ကုဒ် %1$s ကို သုံးပြီး bonus မှတ်တွေ ရယူပါ!</string>
+    <string name="share_success">မျှဝေပေးလို့ ကျေးဇူးတင်ပါတယ်! +%1$d မှတ်</string>
+
+    <!-- Rate app -->
+    <string name="rate_success">အဆင့်သတ်မှတ်ပေးလို့ ကျေးဇူးတင်ပါတယ်! +%1$d မှတ်</string>
+    <string name="rate_opening">Play Store ဖွင့်နေသည်…</string>
+
+    <!-- Invite -->
+    <string name="invite_title">သူငယ်ချင်းများ ဖိတ်ခေါ်ရန်</string>
+    <string name="invite_explain">သင့်ကုဒ်ကို သူငယ်ချင်းတွေနဲ့ မျှဝေပါ။ သူတို့ အဲဒီကုဒ်နဲ့ အကောင့်ဖွင့်ရင် သင် 500 မှတ် ရမည်!</string>
+    <string name="invite_your_code">သင့်မိတ်ဆက်ကုဒ်</string>
+    <string name="invite_copy">ကူးယူရန်</string>
+    <string name="invite_share">မျှဝေရန်</string>
+    <string name="invite_copied">ကုဒ် ကူးယူပြီးပြီ</string>
+    <string name="invite_loading">ကုဒ် ရယူနေသည်…</string>
+    <string name="invite_share_text">ကျွန်တော့်ကုဒ် %1$s နဲ့ Lucky VPN မှာ အကောင့်ဖွင့်ပြီး bonus မှတ်တွေ ရယူလိုက်ပါ!\nhttps://play.google.com/store/apps/details?id=app.lovable.luckyvpnmaster</string>
+    <string name="invite_close">ပိတ်မည်</string>
+
+    <!-- Redeem -->
+    <string name="redeem_title">ဆုများ လဲလှယ်ရန်</string>
+    <string name="redeem_premium7_title">7 ရက် Premium</string>
+    <string name="redeem_premium7_desc">1000 မှတ် သုံးမည်</string>
+    <string name="redeem_cta">လဲလှယ်ရန်</string>
+    <string name="redeem_confirm_title">7 ရက် Premium လဲလှယ်မလား?</string>
+    <string name="redeem_confirm_msg">7 ရက် Premium အတွက် 1000 မှတ် သုံးမလား?</string>
+    <string name="redeem_success">Premium သက်ဝင်ပြီ — %1$s အထိ</string>
+    <string name="redeem_insufficient">အမှတ် မလုံလောက်ပါ — 1000 လိုအပ်သည်။</string>
+
+    <!-- Common -->
+    <string name="dialog_confirm">အတည်ပြုရန်</string>
+    <string name="login_to_earn">ဆုများ ရယူရန် အကောင့်ဝင်ပေးပါ။</string>
+</resources>

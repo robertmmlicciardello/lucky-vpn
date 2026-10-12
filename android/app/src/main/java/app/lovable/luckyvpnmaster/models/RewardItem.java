@@ -18,4 +18,10 @@ public class RewardItem {
         this.iconResource = iconResource;
         this.available = true;
     }
+
+    /** Type drives click dispatch in RewardsFragment: daily | video | wheel | share | rate | invite */
+    public RewardItem(String type, String title, String description, int points, int iconResource) {
+        this(title, description, points, iconResource);
+        this.type = type;
+    }
 }

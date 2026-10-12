@@ -30,7 +30,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Your Points"
+                    android:text="@string/rewards_your_points"
                     android:textSize="16sp"
                     android:textColor="@color/white"
                     android:layout_marginBottom="8dp" />
@@ -62,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_margin="4dp"
-                android:text="Daily\nCheck-in"
+                android:text="@string/rewards_quick_checkin"
                 android:textSize="12sp"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
@@ -72,7 +72,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_margin="4dp"
-                android:text="Watch\nVideo"
+                android:text="@string/rewards_quick_video"
                 android:textSize="12sp"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
@@ -82,17 +82,81 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_margin="4dp"
-                android:text="Lucky\nWheel"
+                android:text="@string/rewards_quick_wheel"
                 android:textSize="12sp"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
         </LinearLayout>
 
+        <!-- Redeem Rewards -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="16dp">
+
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_gift"
+                    android:layout_marginEnd="16dp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/redeem_title"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:textColor="@color/text_secondary"
+                        android:text="@string/redeem_premium7_title" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/primary"
+                        android:text="@string/redeem_premium7_desc" />
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btn_redeem"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/redeem_cta"
+                    android:textColor="@color/white"
+                    android:background="@drawable/btn_pill_primary" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
         <!-- Rewards Grid -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Earn More Points"
+            android:text="@string/rewards_earn_more"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="@color/text_primary"

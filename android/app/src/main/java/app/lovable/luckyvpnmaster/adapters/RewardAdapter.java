@@ -76,9 +76,9 @@ public class RewardAdapter extends RecyclerView.Adapter<RewardAdapter.RewardView
             tvTitle.setText(reward.title);
             tvDescription.setText(reward.description);
             if (reward.points > 0) {
-                tvPoints.setText("+" + reward.points + " points");
+                tvPoints.setText(context.getString(R.string.reward_points_format, reward.points));
             } else {
-                tvPoints.setText("Surprise points");
+                tvPoints.setText(R.string.reward_surprise);
             }
         }
     }
