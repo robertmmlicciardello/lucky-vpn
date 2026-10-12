@@ -25,6 +25,8 @@ import app.lovable.luckyvpnmaster.adapters.ServerAdapter;
 import app.lovable.luckyvpnmaster.api.ServerManager;
 import app.lovable.luckyvpnmaster.auth.AuthManager;
 import app.lovable.luckyvpnmaster.models.Server;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 public class ServersFragment extends Fragment {
     private TabLayout tabLayout;
@@ -36,6 +38,8 @@ public class ServersFragment extends Fragment {
     private final List<Server> allServers = new ArrayList<>();
     private String currentRegion = "all";
     private String currentQuery = "";
+    private AuthManager authManager;
+    private AdView adBanner;
 
     private static final Map<String, String> COUNTRY_REGION = new HashMap<>();
     static {
@@ -65,13 +69,41 @@ public class ServersFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_servers, container, false);
         
         serverManager = new ServerManager(getContext());
+        authManager = new AuthManager(getContext());
         
         initViews(view);
+        setupBanner(view);
         setupTabs();
         setupRecyclerView();
         loadFreeServers(); // Load free servers by default
         
         return view;
+    }
+
+    /** AdMob banner at the bottom — hidden for premium users. */
+    private void setupBanner(View view) {
+        adBanner = view.findViewById(R.id.ad_banner);
+        if (adBanner == null) return;
+        if (authManager != null && authManager.isPremium()) {
+            adBanner.setVisibility(View.GONE);
+            adBanner.destroy();
+            adBanner = null;
+            return;
+        }
+        try {
+            adBanner.loadAd(new AdRequest.Builder().build());
+        } catch (Exception e) {
+            adBanner.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (adBanner != null) {
+            adBanner.destroy();
+            adBanner = null;
+        }
+        super.onDestroyView();
     }
 
     private void initViews(View view) {

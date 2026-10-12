@@ -57,5 +57,17 @@
             android:text="Subscribe"
             android:layout_marginTop="12dp" />
 
+        <!-- Google Play billing — shown only when BillingClient is ready
+             (hidden otherwise; manual KPay/Wave via "Subscribe" still works). -->
+        <Button
+            android:id="@+id/btn_google_play"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/button_primary"
+            android:textColor="@color/white"
+            android:text="@string/pay_with_google_play"
+            android:visibility="gone" />
+
     </LinearLayout>
 </androidx.cardview.widget.CardView>

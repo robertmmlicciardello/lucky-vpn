@@ -147,4 +147,10 @@
     <string name="general">General</string>
     <string name="notifications">Notifications</string>
     <string name="notifications_desc">Connection alerts and updates</string>
+    <!-- AdMob + Google Play Billing (2026-10-12) -->
+    <string name="pay_with_google_play">Pay with Google Play</string>
+    <string name="google_play_unavailable">Google Play payment is not available — please use manual payment</string>
+    <string name="google_play_only_monthly_yearly">Google Play is available for Monthly and Yearly plans only</string>
+    <string name="google_play_purchase_ok">Payment successful — Premium will activate after verification</string>
+    <string name="google_play_purchase_failed">Google Play payment failed</string>
 </resources>

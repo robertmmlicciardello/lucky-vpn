@@ -14,6 +14,7 @@ import app.lovable.luckyvpnmaster.fragments.ServersFragment;
 import app.lovable.luckyvpnmaster.fragments.SpeedTestFragment;
 import app.lovable.luckyvpnmaster.fragments.ProfileFragment;
 import app.lovable.luckyvpnmaster.auth.AuthManager;
+import app.lovable.luckyvpnmaster.ads.AdMobManager;
 
 public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigation;
@@ -25,7 +26,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         authManager = new AuthManager(this);
-        
+
+        // Real AdMob (rewarded + interstitial + banner). TEST IDs until the
+        // owner swaps in real ones — see AdMobManager TODOs.
+        AdMobManager.initialize(this);
+
         // Check if user is logged in (guests are allowed — free servers need no account)
         if (!authManager.isLoggedIn() && !authManager.isGuest()) {
             startActivity(new Intent(this, LoginActivity.class));

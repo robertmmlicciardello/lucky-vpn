@@ -131,4 +131,10 @@
     <string name="general">အထွေထွေ</string>
     <string name="notifications">အသိပေးချက်များ</string>
     <string name="notifications_desc">ချိတ်ဆက်မှု သတိပေးချက်များနှင့် အပ်ဒိတ်များ</string>
+    <!-- AdMob + Google Play Billing (2026-10-12) -->
+    <string name="pay_with_google_play">Google Play ဖြင့် ပေးချေရန်</string>
+    <string name="google_play_unavailable">Google Play ငွေပေးချေမှု မရသေးပါ — လက်ဖြင့်ငွေပေးချေနည်းကို သုံးပါ</string>
+    <string name="google_play_only_monthly_yearly">Google Play ဖြင့် လစဉ် နှင့် နှစ်စဉ် ပက်ကေ့ချ်များသာ ရပါသည်</string>
+    <string name="google_play_purchase_ok">ငွေပေးချေမှု အောင်မြင်ပါသည် — စစ်ဆေးပြီးပါက Premium ပွင့်ပါမည်</string>
+    <string name="google_play_purchase_failed">Google Play ငွေပေးချေမှု မအောင်မြင်ပါ</string>
 </resources>

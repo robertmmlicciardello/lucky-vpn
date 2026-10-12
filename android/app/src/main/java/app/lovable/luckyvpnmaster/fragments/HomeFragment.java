@@ -31,6 +31,7 @@ import app.lovable.luckyvpnmaster.utils.ConnectionManager;
 import app.lovable.luckyvpnmaster.utils.ConnectionHistoryManager;
 import app.lovable.luckyvpnmaster.utils.KillSwitchManager;
 import app.lovable.luckyvpnmaster.utils.SettingsManager;
+import app.lovable.luckyvpnmaster.ads.AdMobManager;
 
 public class HomeFragment extends Fragment implements ConnectionManager.NetworkCallback {
     private TextView tvConnectionStatus, tvUserName, tvUserPlan, tvCurrentServer;
@@ -247,7 +248,14 @@ public class HomeFragment extends Fragment implements ConnectionManager.NetworkC
                 disconnectVPN();
             } else {
                 userInitiatedDisconnect = false;
-                connectVPN();
+                // Real AdMob interstitial first (5-min cooldown, skipped for
+                // premium). connectVPN() ALWAYS runs afterwards — a failed or
+                // missing ad never blocks the VPN connect.
+                if (getActivity() != null) {
+                    AdMobManager.showInterstitialIfDue(getActivity(), this::connectVPN);
+                } else {
+                    connectVPN();
+                }
             }
         });
 

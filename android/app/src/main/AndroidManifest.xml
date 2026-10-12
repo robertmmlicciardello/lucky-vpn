@@ -88,7 +88,10 @@
             android:exported="false"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <!-- AdMob App ID -->
+        <!-- AdMob App ID
+             TODO(owner): replace the TEST App ID below with the REAL AdMob App ID
+             from https://apps.admob.com (format ca-app-pub-XXXXXXXXXXXXXXXX~YYYYYYYYYY)
+             before publishing to Google Play. TEST ID keeps working but earns nothing. -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3940256099942544~3347511713"/>

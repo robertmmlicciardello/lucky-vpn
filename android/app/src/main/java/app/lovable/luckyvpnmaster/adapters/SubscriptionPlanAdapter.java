@@ -18,15 +18,32 @@ public class SubscriptionPlanAdapter extends RecyclerView.Adapter<SubscriptionPl
     private Context context;
     private List<SubscriptionPlan> plans;
     private OnPlanClickListener listener;
+    private OnGooglePlayClickListener googlePlayListener;
+    private boolean googlePlayVisible = false;
 
     public interface OnPlanClickListener {
         void onPlanClick(SubscriptionPlan plan);
+    }
+
+    public interface OnGooglePlayClickListener {
+        void onGooglePlayClick(SubscriptionPlan plan);
     }
 
     public SubscriptionPlanAdapter(Context context, OnPlanClickListener listener) {
         this.context = context;
         this.plans = new ArrayList<>();
         this.listener = listener;
+    }
+
+    /** Set the Google Play purchase listener (button stays hidden until ready). */
+    public void setGooglePlayListener(OnGooglePlayClickListener googlePlayListener) {
+        this.googlePlayListener = googlePlayListener;
+    }
+
+    /** Show/hide the "Pay with Google Play" button on every plan card. */
+    public void setGooglePlayVisible(boolean visible) {
+        this.googlePlayVisible = visible;
+        notifyDataSetChanged();
     }
 
     public void updatePlans(List<SubscriptionPlan> newPlans) {
@@ -55,7 +72,7 @@ public class SubscriptionPlanAdapter extends RecyclerView.Adapter<SubscriptionPl
 
     class PlanViewHolder extends RecyclerView.ViewHolder {
         private TextView tvPlanName, tvDuration, tvPrice, tvFeatures;
-        private Button btnSubscribe;
+        private Button btnSubscribe, btnGooglePlay;
 
         public PlanViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -64,12 +81,21 @@ public class SubscriptionPlanAdapter extends RecyclerView.Adapter<SubscriptionPl
             tvPrice = itemView.findViewById(R.id.tv_price);
             tvFeatures = itemView.findViewById(R.id.tv_features);
             btnSubscribe = itemView.findViewById(R.id.btn_subscribe);
+            btnGooglePlay = itemView.findViewById(R.id.btn_google_play);
 
             btnSubscribe.setOnClickListener(v -> {
                 if (listener != null && getAdapterPosition() != RecyclerView.NO_POSITION) {
                     listener.onPlanClick(plans.get(getAdapterPosition()));
                 }
             });
+
+            if (btnGooglePlay != null) {
+                btnGooglePlay.setOnClickListener(v -> {
+                    if (googlePlayListener != null && getAdapterPosition() != RecyclerView.NO_POSITION) {
+                        googlePlayListener.onGooglePlayClick(plans.get(getAdapterPosition()));
+                    }
+                });
+            }
         }
 
         public void bind(SubscriptionPlan plan) {
@@ -85,6 +111,10 @@ public class SubscriptionPlanAdapter extends RecyclerView.Adapter<SubscriptionPl
                 }
             }
             tvFeatures.setText(features.toString());
+
+            if (btnGooglePlay != null) {
+                btnGooglePlay.setVisibility(googlePlayVisible ? View.VISIBLE : View.GONE);
+            }
         }
     }
 }

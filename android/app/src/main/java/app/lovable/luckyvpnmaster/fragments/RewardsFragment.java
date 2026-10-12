@@ -33,6 +33,7 @@ import app.lovable.luckyvpnmaster.models.RewardTransaction;
 import app.lovable.luckyvpnmaster.rewards.InviteDialog;
 import app.lovable.luckyvpnmaster.rewards.LuckyWheelDialog;
 import app.lovable.luckyvpnmaster.rewards.RewardsManager;
+import app.lovable.luckyvpnmaster.ads.AdMobManager;
 
 public class RewardsFragment extends Fragment {
     private TextView tvPoints;
@@ -281,9 +282,49 @@ public class RewardsFragment extends Fragment {
 
     private void watchRewardedAd() {
         if (!requireLogin()) return;
+        if (getActivity() == null) return;
         // Implement rewarded ad logic
         Toast.makeText(getContext(), "Opening rewarded ad...", Toast.LENGTH_SHORT).show();
 
+        // REAL AdMob rewarded ad. The reward (POST /rewards/watch-ad) is
+        // granted ONLY inside onRewardEarned(). If the ad can't load/show,
+        // fall back to the old simulated flow so the feature never breaks.
+        AdMobManager.showRewardedAd(getActivity(), new AdMobManager.RewardListener() {
+            @Override
+            public void onRewardEarned() {
+                rewardsManager.watchAdReward(new RewardsManager.RewardCallback() {
+                    @Override
+                    public void onSuccess(int pointsEarned) {
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                Toast.makeText(getContext(), "Ad watched! +" + pointsEarned + " points", Toast.LENGTH_SHORT).show();
+                                loadUserPoints();
+                                loadRewardHistory();
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                            });
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onAdUnavailable() {
+                // Fallback: the old simulated flow (ad couldn't load/show).
+                simulateAdReward();
+            }
+        });
+    }
+
+    /** Legacy simulated "watch video" reward — kept as the no-ad fallback. */
+    private void simulateAdReward() {
         // Simulate ad reward
         rewardsManager.addPoints(50, "Watched rewarded video", new RewardsManager.RewardCallback() {
             @Override

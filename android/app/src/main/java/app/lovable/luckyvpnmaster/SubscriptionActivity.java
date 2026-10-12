@@ -13,12 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 import app.lovable.luckyvpnmaster.adapters.SubscriptionPlanAdapter;
 import app.lovable.luckyvpnmaster.models.SubscriptionPlan;
+import app.lovable.luckyvpnmaster.billing.BillingManager;
 
 public class SubscriptionActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private SubscriptionPlanAdapter adapter;
     private TextView tvCurrentPlan;
     private android.widget.ImageButton btnBack;
+    private BillingManager billingManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +31,64 @@ public class SubscriptionActivity extends AppCompatActivity {
         setupClickListeners();
         setupRecyclerView();
         loadSubscriptionPlans();
+        setupGooglePlayBilling();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (billingManager != null) billingManager.destroy();
+        super.onDestroy();
+    }
+
+    /** Google Play billing: shows the "Pay with Google Play" button only when
+     *  billing is actually available; the manual KPay/Wave flow always stays. */
+    private void setupGooglePlayBilling() {
+        billingManager = new BillingManager(this,
+                available -> runOnUiThread(() -> adapter.setGooglePlayVisible(available)),
+                new BillingManager.PurchaseListener() {
+                    @Override
+                    public void onPurchaseSuccess(String orderId, String sku, double amount) {
+                        // Report the Play purchase to OUR backend like a manual
+                        // payment; admin review then activates premium.
+                        new PaymentManager(SubscriptionActivity.this).submitPayment(
+                                orderId, amount, "google_play",
+                                BillingManager.planTypeForSku(sku),
+                                BillingManager.durationDaysForSku(sku),
+                                new PaymentManager.PaymentCallback() {
+                                    @Override
+                                    public void onSuccess(String message) {
+                                        runOnUiThread(() -> {
+                                            Toast.makeText(SubscriptionActivity.this,
+                                                    R.string.google_play_purchase_ok,
+                                                    Toast.LENGTH_LONG).show();
+                                            finish();
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onError(String error) {
+                                        runOnUiThread(() -> Toast.makeText(
+                                                SubscriptionActivity.this, error,
+                                                Toast.LENGTH_LONG).show());
+                                    }
+                                });
+                    }
+
+                    @Override
+                    public void onPurchaseError(String message) {
+                        runOnUiThread(() -> Toast.makeText(SubscriptionActivity.this,
+                                R.string.google_play_purchase_failed,
+                                Toast.LENGTH_SHORT).show());
+                    }
+                });
+        billingManager.start();
+    }
+
+    /** Maps our plan ids to Play Console SUBS product ids (quarterly has none). */
+    private String skuForPlan(String planId) {
+        if ("monthly".equals(planId)) return BillingManager.SKU_MONTHLY;
+        if ("yearly".equals(planId)) return BillingManager.SKU_YEARLY;
+        return null; // TODO(owner): create a "premium_quarterly" SKU in Play Console if wanted
     }
 
     private void initViews() {
@@ -49,6 +109,20 @@ public class SubscriptionActivity extends AppCompatActivity {
             // Open payment activity
             PaymentManager paymentManager = new PaymentManager(this);
             paymentManager.initiatePayment(plan.id, "kpay", plan.price);
+        });
+        adapter.setGooglePlayListener(plan -> {
+            String sku = skuForPlan(plan.id);
+            if (sku == null) {
+                Toast.makeText(this, R.string.google_play_only_monthly_yearly,
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (billingManager != null && billingManager.isSkuAvailable(sku)) {
+                billingManager.launchPurchase(sku);
+            } else {
+                Toast.makeText(this, R.string.google_play_unavailable,
+                        Toast.LENGTH_SHORT).show();
+            }
         });
         recyclerView.setAdapter(adapter);
     }
