@@ -115,4 +115,58 @@ router.put('/:id/status', adminAuth, async (req, res) => {
   }
 });
 
+// ---- Connection tracking (UserConnection) ----
+// Record a VPN session start. Body: { server_id }
+router.post('/connections', auth, async (req, res) => {
+  try {
+    const { UserConnection } = require('../models');
+    const conn = await UserConnection.create({
+      user_id: req.user.id,
+      server_id: req.body.server_id || null,
+      connected_at: new Date()
+    });
+    res.json({ success: true, data: { id: conn.id } });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
+// Record a VPN session end. Body: { } — duration computed server-side.
+router.put('/connections/:id/disconnect', auth, async (req, res) => {
+  try {
+    const { UserConnection } = require('../models');
+    const conn = await UserConnection.findOne({
+      where: { id: req.params.id, user_id: req.user.id }
+    });
+    if (!conn) {
+      return res.status(404).json({ success: false, message: 'Connection not found' });
+    }
+    const now = new Date();
+    const duration = Math.max(0, Math.round((now - conn.connected_at) / 1000));
+    await conn.update({ disconnected_at: now, duration });
+    res.json({ success: true, data: { duration } });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
+// User's connection history
+router.get('/connections', auth, async (req, res) => {
+  try {
+    const { UserConnection, Server } = require('../models');
+    const conns = await UserConnection.findAll({
+      where: { user_id: req.user.id },
+      include: [{ model: Server, attributes: ['name', 'country'] }],
+      order: [['connected_at', 'DESC']],
+      limit: 50
+    });
+    res.json({ success: true, data: conns });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
 module.exports = router;

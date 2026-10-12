@@ -13,8 +13,7 @@ public class APIConfig {
     public static final String PREMIUM_SERVERS_ENDPOINT = "/servers/premium";
     public static final String DAILY_REWARD_ENDPOINT = "/rewards/daily";
     public static final String WATCH_AD_ENDPOINT = "/rewards/watch-ad";
-    public static final String SUBMIT_PAYMENT_ENDPOINT = "/payments/submit";
-    public static final String PAYMENT_ACCOUNTS_ENDPOINT = "/payments/accounts";
+    public static final String SUBMIT_PAYMENT_ENDPOINT = "/subscription/submit";
     // Download the inline .ovpn config for one server: GET /servers/{id}/config
     public static final String SERVER_CONFIG_TEMPLATE = "/servers/%d/config";
 }
