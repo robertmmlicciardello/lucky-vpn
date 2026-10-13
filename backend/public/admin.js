@@ -216,6 +216,7 @@ $('userNext').onclick = () => { if (userPage < userPages) { userPage++; loadUser
 // ---------- payments ----------
 let payments = [];
 async function loadPayments() {
+  loadPaymentConfig();
   try {
     const j = await api('/payments/pending');
     payments = j.data || [];
@@ -234,6 +235,41 @@ async function loadPayments() {
   }
 }
 $('reloadPaymentsBtn').onclick = loadPayments;
+
+// ---------- payment settings ----------
+const PAY_FIELDS = [
+  'kpay_account_number', 'kpay_account_name', 'kpay_qr_url',
+  'wave_account_number', 'wave_account_name', 'wave_qr_url',
+  'monthly_price', 'yearly_price', 'currency',
+  'kpay_enabled', 'wave_enabled', 'google_play_enabled'
+];
+const PAY_BOOL_FIELDS = ['kpay_enabled', 'wave_enabled', 'google_play_enabled'];
+async function loadPaymentConfig() {
+  try {
+    const j = await api('/admin/payment-config');
+    const c = j.data || {};
+    PAY_FIELDS.forEach(f => {
+      const el = $('pay_' + f);
+      if (!el) return;
+      if (PAY_BOOL_FIELDS.indexOf(f) !== -1) el.checked = c[f] !== false;
+      else el.value = c[f] != null ? c[f] : '';
+    });
+  } catch (err) { showMsg('Payment settings: ' + err.message, false); }
+}
+$('savePayCfgBtn').onclick = async () => {
+  const body = {};
+  PAY_FIELDS.forEach(f => {
+    const el = $('pay_' + f);
+    if (!el) return;
+    if (PAY_BOOL_FIELDS.indexOf(f) !== -1) body[f] = el.checked;
+    else if (f === 'monthly_price' || f === 'yearly_price') body[f] = el.value ? parseFloat(el.value, 10) : null;
+    else body[f] = el.value.trim();
+  });
+  try {
+    await api('/admin/payment-config', 'PUT', body);
+    showMsg('Payment settings saved', true);
+  } catch (err) { showMsg('Save failed: ' + err.message, false); }
+};
 function openPaymentModal(p) {
   const u = p.User || {};
   $('paymentModalTitle').textContent = 'Review payment #' + p.id;

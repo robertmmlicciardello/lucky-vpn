@@ -103,8 +103,8 @@
                 android:layout_height="56dp"
                 android:text="@string/continue_as_guest"
                 android:textSize="16sp"
-                android:textColor="@color/vpn_blue"
-                android:background="@drawable/card_rounded_16"
+                android:textColor="@color/white"
+                android:background="@drawable/btn_pill_primary"
                 android:layout_marginBottom="16dp" />
 
             <ProgressBar

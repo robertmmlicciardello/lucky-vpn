@@ -34,3 +34,4 @@ android/.gradle/
 android/local.properties
 *.apk
 *.aab
+.push_api_state.json

@@ -12,6 +12,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import app.lovable.luckyvpnmaster.fragments.HomeFragment;
 import app.lovable.luckyvpnmaster.fragments.ServersFragment;
 import app.lovable.luckyvpnmaster.fragments.SpeedTestFragment;
+import app.lovable.luckyvpnmaster.fragments.RewardsFragment;
 import app.lovable.luckyvpnmaster.fragments.ProfileFragment;
 import app.lovable.luckyvpnmaster.auth.AuthManager;
 import app.lovable.luckyvpnmaster.ads.AdMobManager;
@@ -62,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
                 fragment = new ServersFragment();
             } else if (itemId == R.id.nav_speedtest) {
                 fragment = new SpeedTestFragment();
+            } else if (itemId == R.id.nav_rewards) {
+                fragment = new RewardsFragment();
             } else if (itemId == R.id.nav_profile) {
                 fragment = new ProfileFragment();
             }

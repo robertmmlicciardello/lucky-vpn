@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Monetize VPN</string>
+    <string name="app_name">Lucky VPN</string>
     <string name="welcome">Welcome</string>
     <string name="connect">Connect</string>
     <string name="disconnect">Disconnect</string>
@@ -70,6 +70,7 @@
     <string name="nav_home">Home</string>
     <string name="nav_servers">Servers</string>
     <string name="nav_speedtest">Speed Test</string>
+    <string name="nav_rewards">Rewards</string>
     <string name="nav_profile">Profile</string>
 
     <!-- Auth extras -->

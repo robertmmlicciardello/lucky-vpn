@@ -1,6 +1,6 @@
 
 const express = require('express');
-const { User, Server, Payment, Reward } = require('../models');
+const { User, Server, Payment, Reward, PaymentConfig } = require('../models');
 const adminAuth = require('../middleware/adminAuth');
 const router = express.Router();
 
@@ -80,6 +80,59 @@ router.post('/vpngate-sync', adminAuth, async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'VPNGate sync failed: ' + error.message
+    });
+  }
+});
+
+// Get payment configuration (admin only). Creates the singleton row (id=1) if missing.
+router.get('/payment-config', adminAuth, async (req, res) => {
+  try {
+    let config = await PaymentConfig.findByPk(1);
+    if (!config) config = await PaymentConfig.create({ id: 1 });
+    res.json({
+      success: true,
+      data: config
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
+  }
+});
+
+// Update payment configuration (admin only)
+router.put('/payment-config', adminAuth, async (req, res) => {
+  try {
+    const fields = [
+      'kpay_account_number', 'kpay_account_name', 'kpay_qr_url',
+      'wave_account_number', 'wave_account_name', 'wave_qr_url',
+      'monthly_price', 'yearly_price', 'currency',
+      'kpay_enabled', 'wave_enabled', 'google_play_enabled'
+    ];
+    const body = {};
+    fields.forEach(f => {
+      if (req.body[f] !== undefined) body[f] = req.body[f];
+    });
+
+    let config = await PaymentConfig.findByPk(1);
+    if (!config) {
+      config = await PaymentConfig.create(Object.assign({ id: 1 }, body));
+    } else {
+      await config.update(body);
+    }
+
+    res.json({
+      success: true,
+      message: 'Payment config saved',
+      data: config
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error'
     });
   }
 });

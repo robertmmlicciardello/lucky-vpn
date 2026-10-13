@@ -194,8 +194,9 @@ public class ServersFragment extends Fragment {
     private void setupRecyclerView() {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         serverAdapter = new ServerAdapter(getContext(), (server, position) -> {
-            // Handle server selection
+            // Handle server selection — persist so Home/Connect uses it.
             serverAdapter.setSelectedPosition(position);
+            new ServerManager(getContext()).saveSelectedServer(server);
             Toast.makeText(getContext(), "Selected: " + server.name, Toast.LENGTH_SHORT).show();
         });
         recyclerView.setAdapter(serverAdapter);

@@ -22,6 +22,7 @@ const notificationRoutes = require('./routes/notifications');
 const supportRoutes = require('./routes/support');
 const blogRoutes = require('./routes/blog');
 const leaderboardRoutes = require('./routes/leaderboard');
+const paymentConfigRoutes = require('./routes/paymentConfig');
 
 const db = require('./models');
 const logger = require('./utils/logger');
@@ -98,6 +99,7 @@ app.use('/api/v1/ads', adRoutes);
 app.use('/api/v1/notifications', notificationRoutes);
 app.use('/api/v1/support', supportRoutes);
 app.use('/api/v1/blog', blogRoutes);
+app.use('/api/v1/payment-config', paymentConfigRoutes);
 
 // Admin web panel (static single-page app)
 const path = require('path');

@@ -284,6 +284,13 @@ public class HomeFragment extends Fragment implements ConnectionManager.NetworkC
     }
     
     private void loadBestServer() {
+        // Prefer the server the user picked in the Servers tab.
+        Server saved = serverManager.getSelectedServer();
+        if (saved != null) {
+            currentServer = saved;
+            tvCurrentServer.setText(saved.country + " - " + saved.city);
+            return;
+        }
         serverManager.getBestServer(new ServerManager.ServerCallback() {
             @Override
             public void onSuccess(Server server) {

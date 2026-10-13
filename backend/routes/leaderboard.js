@@ -4,8 +4,8 @@ const { User, Reward } = require('../models');
 const auth = require('../middleware/auth');
 const router = express.Router();
 
-// Get points leaderboard
-router.get('/points', auth, async (req, res) => {
+// Get points leaderboard (public - guests can view without a token)
+router.get('/points', async (req, res) => {
   try {
     const users = await User.findAll({
       attributes: ['id', 'name', 'points'],
@@ -33,8 +33,8 @@ router.get('/points', auth, async (req, res) => {
   }
 });
 
-// Get referral leaderboard
-router.get('/referrals', auth, async (req, res) => {
+// Get referral leaderboard (public - guests can view without a token)
+router.get('/referrals', async (req, res) => {
   try {
     const users = await User.findAll({
       attributes: [

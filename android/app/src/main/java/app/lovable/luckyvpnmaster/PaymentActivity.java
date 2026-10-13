@@ -21,6 +21,7 @@ public class PaymentActivity extends AppCompatActivity {
     private String accountName;
     private String planId;
     private double amount;
+    private String qrUrl;
     
     private TextView tvPaymentMethod;
     private TextView tvAccountNumber;
@@ -44,6 +45,7 @@ public class PaymentActivity extends AppCompatActivity {
         accountName = intent.getStringExtra("account_name");
         planId = intent.getStringExtra("plan_id");
         amount = intent.getDoubleExtra("amount", 0.0);
+        qrUrl = intent.getStringExtra("qr_url");
         
         initViews();
         setupPaymentDetails();
@@ -147,14 +149,35 @@ public class PaymentActivity extends AppCompatActivity {
     }
 
     private void loadKPayQR() {
-        // In a real app, you would generate or load the actual QR code
-        // For now, we'll use a placeholder
-        ivQRCode.setImageResource(R.drawable.kpay_qr_placeholder);
+        if (!loadQrFromUrl()) {
+            ivQRCode.setImageResource(R.drawable.kpay_qr_placeholder);
+        }
     }
 
     private void loadWaveQR() {
-        // In a real app, you would generate or load the actual QR code
-        // For now, we'll use a placeholder
-        ivQRCode.setImageResource(R.drawable.wave_qr_placeholder);
+        if (!loadQrFromUrl()) {
+            ivQRCode.setImageResource(R.drawable.wave_qr_placeholder);
+        }
+    }
+
+    /** Load the admin-configured QR image URL; returns false when none is set. */
+    private boolean loadQrFromUrl() {
+        if (qrUrl == null || qrUrl.trim().isEmpty()) return false;
+        final String url = qrUrl.trim();
+        new Thread(() -> {
+            try {
+                java.net.URL u = new java.net.URL(url);
+                java.net.HttpURLConnection c = (java.net.HttpURLConnection) u.openConnection();
+                c.setConnectTimeout(15000);
+                c.setReadTimeout(15000);
+                android.graphics.Bitmap bmp =
+                        android.graphics.BitmapFactory.decodeStream(c.getInputStream());
+                if (bmp != null) {
+                    runOnUiThread(() -> ivQRCode.setImageBitmap(bmp));
+                }
+            } catch (Exception ignored) {
+            }
+        }).start();
+        return true;
     }
 }

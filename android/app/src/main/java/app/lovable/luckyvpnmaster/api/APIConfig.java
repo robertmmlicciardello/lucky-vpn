@@ -19,6 +19,7 @@ public class APIConfig {
     public static final String REDEEM_REWARD_ENDPOINT = "/rewards/redeem";
     public static final String PROFILE_ENDPOINT = "/users/profile";
     public static final String SUBMIT_PAYMENT_ENDPOINT = "/subscription/submit";
+    public static final String PAYMENT_CONFIG_ENDPOINT = "/payment-config";
     // Download the inline .ovpn config for one server: GET /servers/{id}/config
     public static final String SERVER_CONFIG_TEMPLATE = "/servers/%d/config";
 }

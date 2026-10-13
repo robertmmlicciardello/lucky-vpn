@@ -18,9 +18,44 @@ public class ServerManager {
     private Context context;
     private AuthManager authManager;
 
+    private static final String PREFS = "lucky_vpn_prefs";
+    private static final String KEY_SELECTED_SERVER = "selected_server_json";
+
     public ServerManager(Context context) {
         this.context = context;
         this.authManager = new AuthManager(context);
+    }
+
+    /** Persist the user's chosen server so Home/Connect uses it. */
+    public void saveSelectedServer(Server server) {
+        try {
+            JSONObject j = new JSONObject();
+            j.put("id", server.id);
+            j.put("name", server.name);
+            j.put("country", server.country);
+            j.put("city", server.city);
+            j.put("ip", server.ip);
+            j.put("port", server.port);
+            j.put("protocol", server.protocol);
+            j.put("type", server.type);
+            j.put("status", server.status);
+            context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+                    .edit().putString(KEY_SELECTED_SERVER, j.toString()).apply();
+        } catch (Exception e) {
+            Log.e("ServerManager", "saveSelectedServer failed", e);
+        }
+    }
+
+    /** The server the user picked in the Servers tab, or null if none. */
+    public Server getSelectedServer() {
+        try {
+            String json = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+                    .getString(KEY_SELECTED_SERVER, null);
+            if (json == null) return null;
+            return parseServer(new JSONObject(json));
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public interface ServerCallback {
@@ -170,11 +205,11 @@ public class ServerManager {
     private Server parseServer(JSONObject json) throws Exception {
         Server server = new Server();
         server.id = json.getInt("id");
-        server.name = json.getString("name");
-        server.country = json.getString("country");
+        server.name = json.optString("name", "");
+        server.country = json.optString("country", "");
         server.city = json.optString("city", "");
-        server.ip = json.getString("ip");
-        server.port = json.getString("port");
+        server.ip = json.optString("ip", "");
+        server.port = json.optString("port", "");
         server.protocol = json.optString("protocol", "OpenVPN");
         server.type = json.optString("type", "free");
         server.status = json.optString("status", "online");

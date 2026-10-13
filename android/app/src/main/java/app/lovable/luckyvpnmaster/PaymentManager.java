@@ -75,16 +75,51 @@ public class PaymentManager {
         }).start();
     }
 
-    /** Open the payment screen for a subscription plan. */
+    /** Open the payment screen for a subscription plan, with account details from the server. */
     public void initiatePayment(String planId, String paymentMethod, double amount) {
-        Intent intent = new Intent(context, PaymentActivity.class);
-        intent.putExtra("plan_id", planId);
-        intent.putExtra("payment_method", paymentMethod);
-        intent.putExtra("account_number", "");
-        intent.putExtra("account_name", "");
-        intent.putExtra("amount", amount);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
+        new Thread(() -> {
+            String accountNumber = "";
+            String accountName = "";
+            String qrUrl = "";
+            try {
+                URL url = new URL(APIConfig.API_BASE_URL + APIConfig.PAYMENT_CONFIG_ENDPOINT);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setConnectTimeout(10000);
+                conn.setReadTimeout(10000);
+                int code = conn.getResponseCode();
+                BufferedReader br = new BufferedReader(new InputStreamReader(
+                        code >= 200 && code < 300 ? conn.getInputStream() : conn.getErrorStream()));
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = br.readLine()) != null) sb.append(line);
+                br.close();
+                if (code == 200) {
+                    JSONObject data = new JSONObject(sb.toString()).optJSONObject("data");
+                    if (data == null) data = new JSONObject();
+                    String m = paymentMethod.toLowerCase();
+                    if (m.contains("kpay")) {
+                        accountNumber = data.optString("kpay_account_number", "");
+                        accountName = data.optString("kpay_account_name", "");
+                        qrUrl = data.optString("kpay_qr_url", "");
+                    } else if (m.contains("wave")) {
+                        accountNumber = data.optString("wave_account_number", "");
+                        accountName = data.optString("wave_account_name", "");
+                        qrUrl = data.optString("wave_qr_url", "");
+                    }
+                }
+            } catch (Exception e) {
+                Log.e("PaymentManager", "payment-config fetch failed", e);
+            }
+            Intent intent = new Intent(context, PaymentActivity.class);
+            intent.putExtra("plan_id", planId);
+            intent.putExtra("payment_method", paymentMethod);
+            intent.putExtra("account_number", accountNumber);
+            intent.putExtra("account_name", accountName);
+            intent.putExtra("qr_url", qrUrl);
+            intent.putExtra("amount", amount);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        }).start();
     }
 
     /** Submit a manual payment proof (transaction ID entered by the user). */
