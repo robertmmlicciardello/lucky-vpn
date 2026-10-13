@@ -1,9 +1,29 @@
 
 const express = require('express');
-const { Reward, User } = require('../models');
+const { Reward, User, RewardConfig } = require('../models');
 const auth = require('../middleware/auth');
 const adminAuth = require('../middleware/adminAuth');
 const router = express.Router();
+
+/** Singleton reward config (row id=1), created with defaults if missing. */
+async function getRewardConfig() {
+  let cfg = await RewardConfig.findByPk(1);
+  if (!cfg) cfg = await RewardConfig.create({ id: 1 });
+  return cfg;
+}
+
+/**
+ * Scale a raw wheel win from the default 10..1000 range into the
+ * configured wheel_min_points..wheel_max_points range, preserving the
+ * weighted-tier distribution.
+ */
+function scaleWheel(raw, cfg) {
+  const min = cfg.wheel_min_points;
+  const max = cfg.wheel_max_points;
+  if (!(max > min)) return min;
+  const frac = (raw - 10) / (1000 - 10);
+  return Math.round(min + frac * (max - min));
+}
 
 // Get user rewards
 router.get('/', auth, async (req, res) => {
@@ -49,7 +69,8 @@ router.post('/daily', auth, async (req, res) => {
       });
     }
 
-    const points = 100;
+    const cfg = await getRewardConfig();
+    const points = cfg.daily_checkin_points;
     await Reward.create({
       user_id: req.user.id,
       type: 'daily',
@@ -76,7 +97,8 @@ router.post('/daily', auth, async (req, res) => {
 // Watch ad reward
 router.post('/watch-ad', auth, async (req, res) => {
   try {
-    const points = 50;
+    const cfg = await getRewardConfig();
+    const points = cfg.watch_ad_points;
     await Reward.create({
       user_id: req.user.id,
       type: 'ad',
@@ -135,14 +157,16 @@ router.post('/wheel', auth, async (req, res) => {
     if (recent) {
       return res.status(400).json({ success: false, message: 'Wheel spin available once per hour' });
     }
-    // Weighted random: mostly small wins, rarely big
+    // Weighted random: mostly small wins, rarely big (scaled to configured range)
+    const cfg = await getRewardConfig();
     const roll = Math.random() * 100;
-    let points;
-    if (roll < 40) points = 10 + Math.floor(Math.random() * 40);        // 10-49
-    else if (roll < 70) points = 50 + Math.floor(Math.random() * 50);   // 50-99
-    else if (roll < 90) points = 100 + Math.floor(Math.random() * 100); // 100-199
-    else if (roll < 98) points = 200 + Math.floor(Math.random() * 300); // 200-499
-    else points = 500 + Math.floor(Math.random() * 501);                // 500-1000
+    let raw;
+    if (roll < 40) raw = 10 + Math.floor(Math.random() * 40);        // 10-49
+    else if (roll < 70) raw = 50 + Math.floor(Math.random() * 50);   // 50-99
+    else if (roll < 90) raw = 100 + Math.floor(Math.random() * 100); // 100-199
+    else if (roll < 98) raw = 200 + Math.floor(Math.random() * 300); // 200-499
+    else raw = 500 + Math.floor(Math.random() * 501);                // 500-1000
+    const points = scaleWheel(raw, cfg);
 
     await Reward.create({
       user_id: req.user.id, type: 'wheel', points,
@@ -168,7 +192,8 @@ router.post('/share', auth, async (req, res) => {
     if (existing) {
       return res.status(400).json({ success: false, message: 'Share reward already claimed today' });
     }
-    const points = 200;
+    const cfg = await getRewardConfig();
+    const points = cfg.share_points;
     await Reward.create({
       user_id: req.user.id, type: 'share', points,
       description: 'Shared the app'
@@ -190,7 +215,8 @@ router.post('/rate', auth, async (req, res) => {
     if (existing) {
       return res.status(400).json({ success: false, message: 'Rate reward already claimed' });
     }
-    const points = 300;
+    const cfg = await getRewardConfig();
+    const points = cfg.rate_points;
     await Reward.create({
       user_id: req.user.id, type: 'rate', points,
       description: 'Rated the app'
@@ -203,11 +229,18 @@ router.post('/rate', auth, async (req, res) => {
   }
 });
 
-// Redeem points — currently: 'premium_7d' costs 1000 pts → 7 days premium
+// Redeem points — cost/days come from RewardConfig (default: 1000 pts → 7 days premium)
 router.post('/redeem', auth, async (req, res) => {
   try {
     const { reward } = req.body;
-    const catalog = { premium_7d: { cost: 1000, days: 7, label: '7 days Premium' } };
+    const cfg = await getRewardConfig();
+    const catalog = {
+      premium_7d: {
+        cost: cfg.redeem_points_required,
+        days: cfg.redeem_premium_days,
+        label: `${cfg.redeem_premium_days} days Premium`
+      }
+    };
     const item = catalog[reward];
     if (!item) {
       return res.status(400).json({ success: false, message: 'Unknown reward' });

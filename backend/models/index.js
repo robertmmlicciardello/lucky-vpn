@@ -53,6 +53,8 @@ const BlogPost = require('./BlogPost')(sequelize, Sequelize.DataTypes);
 const AdConfig = require('./AdConfig')(sequelize, Sequelize.DataTypes);
 const OneConnectConfig = require('./OneConnectConfig')(sequelize, Sequelize.DataTypes);
 const PaymentConfig = require('./PaymentConfig')(sequelize, Sequelize.DataTypes);
+const RewardConfig = require('./RewardConfig')(sequelize, Sequelize.DataTypes);
+const AppConfig = require('./AppConfig')(sequelize, Sequelize.DataTypes);
 const UserConnection = require('./UserConnection')(sequelize, Sequelize.DataTypes);
 
 // Define associations
@@ -95,6 +97,8 @@ const db = {
   AdConfig,
   OneConnectConfig,
   PaymentConfig,
+  RewardConfig,
+  AppConfig,
   UserConnection
 };
 

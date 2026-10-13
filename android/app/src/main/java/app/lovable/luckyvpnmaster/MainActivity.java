@@ -41,11 +41,16 @@ public class MainActivity extends AppCompatActivity {
 
         initViews();
         setupBottomNavigation();
-        
-        // Load default fragment
-        if (savedInstanceState == null) {
-            loadFragment(new HomeFragment());
-        }
+
+        // Enforce the admin's Critical Controls (maintenance mode / force
+        // update) before showing the app. The home fragment loads only when
+        // the check passes; a network failure never blocks the app.
+        app.lovable.luckyvpnmaster.utils.AppConfigChecker.check(this, () -> {
+            // Load default fragment
+            if (savedInstanceState == null) {
+                loadFragment(new HomeFragment());
+            }
+        });
     }
 
     private void initViews() {

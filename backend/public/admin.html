@@ -90,6 +90,10 @@
     <button data-tab="support">Support</button>
     <button data-tab="blog">Blog</button>
     <button data-tab="ads">Ads</button>
+    <button data-tab="plans">Plans</button>
+    <button data-tab="rewards">Rewards</button>
+    <button data-tab="leaderboard">Leaderboard</button>
+    <button data-tab="settings">Settings</button>
   </div>
   <div class="content">
     <div id="msg" class="msg hidden"></div>
@@ -121,6 +125,20 @@
 
     <!-- SERVERS -->
     <div id="tab-servers" class="hidden">
+      <div class="panel">
+        <div class="section-title" style="margin-top:0">OneConnect server provider</div>
+        <div id="ocStatusLine" class="muted" style="margin-bottom:8px">Loading…</div>
+        <label>API URL</label><input id="oc_api_url" placeholder="https://provider.example.com/api">
+        <label>API key</label><input id="oc_api_key" type="password" placeholder="••••••••" autocomplete="off">
+        <div class="row">
+          <div><label>Sync interval (minutes)</label><input id="oc_sync_interval" type="number" min="1" placeholder="60"></div>
+        </div>
+        <label><input type="checkbox" id="oc_auto_sync" style="width:auto"> Auto-sync servers</label>
+        <div class="toolbar">
+          <button id="saveOcBtn">💾 Save OneConnect</button>
+          <button id="syncOcBtn" class="ghost">🔄 Sync now</button>
+        </div>
+      </div>
       <div class="toolbar">
         <button id="addServerBtn">＋ Add server</button>
         <button id="reloadServersBtn" class="ghost">Reload</button>
@@ -260,6 +278,7 @@
               <option value="admob">admob</option>
               <option value="facebook">facebook</option>
               <option value="unity">unity</option>
+              <option value="applovin">applovin</option>
             </select>
           </div>
           <div><label>Show ads</label>
@@ -286,7 +305,125 @@
         <label>Banner ID</label><input id="ad_unity_banner_id">
         <label>Interstitial ID</label><input id="ad_unity_interstitial_id">
         <label>Rewarded ID</label><input id="ad_unity_rewarded_id">
+        <div class="section-title">AppLovin MAX</div>
+        <label>SDK Key</label><input id="ad_applovin_sdk_key">
+        <label>Banner ID</label><input id="ad_applovin_banner_id">
+        <label>Interstitial ID</label><input id="ad_applovin_interstitial_id">
+        <label>Rewarded ID</label><input id="ad_applovin_rewarded_id">
         <button id="saveAdsBtn">💾 Save ad config</button>
+      </div>
+    </div>
+
+    <!-- PLANS -->
+    <div id="tab-plans" class="hidden">
+      <div class="panel">
+        <div class="section-title" style="margin-top:0">Subscription plans & payment methods</div>
+        <div class="row">
+          <div><label>Monthly price</label><input id="plan_monthly_price" type="number" step="0.01" placeholder="0"></div>
+          <div><label>Yearly price</label><input id="plan_yearly_price" type="number" step="0.01" placeholder="0"></div>
+        </div>
+        <label>Currency</label><input id="plan_currency" placeholder="MMK">
+        <label><input type="checkbox" id="plan_kpay_enabled" checked style="width:auto"> Enable KPay</label>
+        <label><input type="checkbox" id="plan_wave_enabled" checked style="width:auto"> Enable Wave Money</label>
+        <label><input type="checkbox" id="plan_google_play_enabled" checked style="width:auto"> Enable Google Play billing</label>
+        <div class="toolbar"><button id="savePlansBtn">💾 Save plans</button></div>
+        <div class="muted">Payment account numbers / QR images are set under Payments → Payment settings.</div>
+      </div>
+    </div>
+
+    <!-- REWARDS -->
+    <div id="tab-rewards" class="hidden">
+      <div class="panel">
+        <div class="section-title" style="margin-top:0">Reward points configuration</div>
+        <div class="row">
+          <div><label>Daily check-in</label><input id="rw_daily_checkin_points" type="number" min="0"></div>
+          <div><label>Watch ad</label><input id="rw_watch_ad_points" type="number" min="0"></div>
+        </div>
+        <div class="row">
+          <div><label>Wheel min</label><input id="rw_wheel_min_points" type="number" min="0"></div>
+          <div><label>Wheel max</label><input id="rw_wheel_max_points" type="number" min="0"></div>
+        </div>
+        <div class="row">
+          <div><label>Share app</label><input id="rw_share_points" type="number" min="0"></div>
+          <div><label>Rate app</label><input id="rw_rate_points" type="number" min="0"></div>
+        </div>
+        <div class="row">
+          <div><label>Invite friend</label><input id="rw_invite_points" type="number" min="0"></div>
+          <div><label>Redeem: points required</label><input id="rw_redeem_points_required" type="number" min="0"></div>
+        </div>
+        <label>Redeem: premium days granted</label><input id="rw_redeem_premium_days" type="number" min="1">
+        <div class="toolbar"><button id="saveRewardsBtn">💾 Save reward config</button></div>
+      </div>
+      <div class="panel">
+        <div class="section-title" style="margin-top:0">Stats</div>
+        <div id="rewardStats" class="muted">Loading…</div>
+      </div>
+    </div>
+
+    <!-- LEADERBOARD -->
+    <div id="tab-leaderboard" class="hidden">
+      <div class="section-title">Top users by points</div>
+      <div class="toolbar">
+        <button id="reloadLeaderboardBtn" class="ghost">Reload</button>
+      </div>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Rank</th><th>Name</th><th>Points</th></tr></thead>
+        <tbody id="leaderboardRows"><tr><td colspan="3" style="text-align:center;color:#aaa">Loading…</td></tr></tbody>
+      </table></div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="tab-settings" class="hidden">
+      <div class="panel" style="border-left:4px solid #f39c12">
+        <div class="section-title" style="margin-top:0;color:#b06a00">Critical Controls</div>
+        <div class="muted" style="margin-bottom:10px">Important settings that affect all users immediately</div>
+        <label><input type="checkbox" id="cfg_maintenance_mode" style="width:auto"> Maintenance mode <span class="muted">— temporarily disable app access for all users</span></label>
+        <label>Maintenance message</label><input id="cfg_maintenance_message" placeholder="Shown to users while in maintenance">
+        <div class="row">
+          <div><label>Min app version <span class="muted">(force update below this)</span></label><input id="cfg_min_app_version" placeholder="1.0.0"></div>
+          <div><label>Latest app version</label><input id="cfg_latest_app_version" placeholder="1.0.0"></div>
+        </div>
+        <label>Update URL</label><input id="cfg_update_url" placeholder="https://…/lucky-vpn.apk">
+      </div>
+
+      <div class="panel">
+        <div class="section-title" style="margin-top:0">App Information</div>
+        <div class="row">
+          <div><label>App name</label><input id="cfg_app_name" placeholder="Lucky VPN"></div>
+          <div><label>Support email</label><input id="cfg_support_email" placeholder="support@example.com"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="section-title" style="margin-top:0">VPN Features</div>
+        <label>Free server limit <span class="muted">(max free servers shown to non-premium users)</span></label>
+        <input id="cfg_free_server_limit" type="number" min="1" placeholder="5">
+      </div>
+
+      <div class="panel">
+        <div class="section-title" style="margin-top:0">Notification Settings</div>
+        <label><input type="checkbox" id="cfg_push_notifications_enabled" checked style="width:auto"> Push notifications <span class="muted">— general push notifications</span></label>
+        <label><input type="checkbox" id="cfg_update_notifications_enabled" checked style="width:auto"> Update notifications <span class="muted">— notify users about app updates</span></label>
+        <label><input type="checkbox" id="cfg_promo_notifications_enabled" style="width:auto"> Promotional notifications <span class="muted">— marketing messages</span></label>
+      </div>
+
+      <div class="panel">
+        <div class="section-title" style="margin-top:0">Content & URLs</div>
+        <label>Privacy Policy URL</label><input id="cfg_privacy_policy_url" placeholder="https://…/privacy">
+        <label>Terms of Service URL</label><input id="cfg_terms_of_service_url" placeholder="https://…/terms">
+        <label>Support URL</label><input id="cfg_support_url" placeholder="https://…/support">
+        <label>Banner image URL</label><input id="cfg_banner_image_url" placeholder="https://…/banner.jpg">
+      </div>
+
+      <div class="panel">
+        <div class="toolbar"><button id="saveAppCfgBtn">💾 Save all settings</button></div>
+        <div class="section-title">Server info</div>
+        <div id="appInfo" class="muted">Loading…</div>
+        <div class="toolbar" style="margin-top:10px">
+          <a id="linkHealth" href="/health" target="_blank"><button class="ghost" type="button">Health endpoint</button></a>
+          <a href="/api/v1/payment-config" target="_blank"><button class="ghost" type="button">Public payment config</button></a>
+          <a href="/api/v1/app-config" target="_blank"><button class="ghost" type="button">Public app config</button></a>
+        </div>
       </div>
     </div>
 

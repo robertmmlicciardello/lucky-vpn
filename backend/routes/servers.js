@@ -1,6 +1,6 @@
 
 const express = require('express');
-const { Server } = require('../models');
+const { Server, AppConfig } = require('../models');
 const auth = require('../middleware/auth');
 const adminOrAuth = require('../middleware/adminOrAuth');
 const optionalAuth = require('../middleware/optionalAuth');
@@ -41,16 +41,29 @@ router.get('/', adminOrAuth, async (req, res) => {
   }
 });
 
-// Get free servers (PUBLIC - guests can browse without an account)
-router.get('/free', async (req, res) => {
+// Get free servers (PUBLIC - guests can browse without an account).
+// Non-premium users see at most AppConfig.free_server_limit servers;
+// premium users see the full list.
+router.get('/free', optionalAuth, async (req, res) => {
   try {
+    const isPremium = !!(req.user && req.user.plan === 'premium');
+
+    let limit = null;
+    if (!isPremium) {
+      let cfg = await AppConfig.findByPk(1);
+      if (!cfg) cfg = await AppConfig.create({ id: 1 });
+      limit = cfg.free_server_limit;
+      if (limit == null || limit < 0) limit = 5;
+    }
+
     const servers = await Server.findAll({
-      where: { 
+      where: {
         status: 'online',
         type: 'free'
       },
       attributes: ['id', 'name', 'country', 'city', 'ip', 'port', 'protocol', 'type', 'load', 'users'],
-      order: [['load', 'ASC']]
+      order: [['load', 'ASC']],
+      ...(limit != null ? { limit } : {})
     });
 
     res.json({

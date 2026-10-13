@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     type: {
-      type: DataTypes.ENUM('daily', 'ad', 'referral', 'bonus'),
+      type: DataTypes.ENUM('daily', 'ad', 'referral', 'bonus', 'wheel', 'share', 'rate', 'redeem', 'invite'),
       allowNull: false
     },
     points: {

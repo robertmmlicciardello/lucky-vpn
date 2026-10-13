@@ -101,17 +101,23 @@ router.post('/register', [
     referred_by: referrer ? referrer.id : null
   });
 
-  // Award the referrer 500 pts for the invite
+  // Award the referrer invite points from RewardConfig for the invite
   if (referrer) {
-    const { Reward } = require('../models');
+    const { Reward, RewardConfig } = require('../models');
+    let invitePoints = 500;
+    try {
+      let rc = await RewardConfig.findByPk(1);
+      if (!rc) rc = await RewardConfig.create({ id: 1 });
+      invitePoints = rc.invite_points;
+    } catch (e) { /* fall back to default */ }
     await Reward.create({
       user_id: referrer.id,
       type: 'invite',
-      points: 500,
+      points: invitePoints,
       description: `Invited ${name} (${email})`
     });
-    await referrer.increment('points', { by: 500 });
-    logger.info('Invite reward granted', { referrerId: referrer.id, newUserId: user.id });
+    await referrer.increment('points', { by: invitePoints });
+    logger.info('Invite reward granted', { referrerId: referrer.id, newUserId: user.id, points: invitePoints });
   }
 
   const token = jwt.sign(

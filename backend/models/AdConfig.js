@@ -54,8 +54,24 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true
     },
+    applovin_sdk_key: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    applovin_banner_id: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    applovin_interstitial_id: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    applovin_rewarded_id: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
     primary_network: {
-      type: DataTypes.ENUM('admob', 'facebook', 'unity'),
+      type: DataTypes.ENUM('admob', 'facebook', 'unity', 'applovin'),
       defaultValue: 'admob'
     },
     show_ads: {

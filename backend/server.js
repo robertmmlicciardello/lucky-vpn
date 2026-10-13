@@ -23,6 +23,7 @@ const supportRoutes = require('./routes/support');
 const blogRoutes = require('./routes/blog');
 const leaderboardRoutes = require('./routes/leaderboard');
 const paymentConfigRoutes = require('./routes/paymentConfig');
+const appConfigRoutes = require('./routes/appConfig');
 
 const db = require('./models');
 const logger = require('./utils/logger');
@@ -100,6 +101,7 @@ app.use('/api/v1/notifications', notificationRoutes);
 app.use('/api/v1/support', supportRoutes);
 app.use('/api/v1/blog', blogRoutes);
 app.use('/api/v1/payment-config', paymentConfigRoutes);
+app.use('/api/v1/app-config', appConfigRoutes);
 
 // Admin web panel (static single-page app)
 const path = require('path');
@@ -211,7 +213,31 @@ async function ensureDatabase() {
 
 ensureDatabase()
   .then(() => db.sequelize.sync({ force: false }))
-  .then(() => {
+  .then(async () => {
+  // Expand AdConfig.primary_network ENUM for AppLovin (sync() adds new
+  // columns but never alters an existing ENUM on MySQL/TiDB).
+  try {
+    if ((process.env.DB_DIALECT || 'mysql').toLowerCase() === 'mysql') {
+      await db.sequelize.query(
+        "ALTER TABLE `AdConfigs` MODIFY COLUMN `primary_network` " +
+        "ENUM('admob','facebook','unity','applovin') DEFAULT 'admob'"
+      );
+    }
+  } catch (e) {
+    logger.warn('AdConfig ENUM migration skipped: ' + e.message);
+  }
+  // Expand Reward.type ENUM for wheel/share/rate/redeem/invite (sync()
+  // never alters an existing ENUM on MySQL/TiDB).
+  try {
+    if ((process.env.DB_DIALECT || 'mysql').toLowerCase() === 'mysql') {
+      await db.sequelize.query(
+        "ALTER TABLE `Rewards` MODIFY COLUMN `type` " +
+        "ENUM('daily','ad','referral','bonus','wheel','share','rate','redeem','invite') NOT NULL"
+      );
+    }
+  } catch (e) {
+    logger.warn('Reward ENUM migration skipped: ' + e.message);
+  }
   // Scheduled VPNGate free-server sync (every 6h). Disable with SYNC_CRON=off.
   if (process.env.SYNC_CRON !== 'off') {
     try {

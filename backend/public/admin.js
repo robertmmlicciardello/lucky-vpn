@@ -84,7 +84,8 @@ function switchTab(name) {
 function loadTab(name) {
   ({ dashboard: loadDashboard, servers: loadServers, users: loadUsers,
      payments: loadPayments, notifications: loadNotifications, support: loadTickets,
-     blog: loadPosts, ads: loadAds }[name] || (() => {}))();
+     blog: loadPosts, ads: loadAds, plans: loadPlans, rewards: loadRewardConfigTab,
+     leaderboard: loadLeaderboardTab, settings: loadSettings }[name] || (() => {}))();
 }
 document.querySelectorAll('#tabs button').forEach(b => b.onclick = () => switchTab(b.dataset.tab));
 
@@ -128,6 +129,7 @@ $('syncBtn').onclick = async () => {
 // ---------- servers ----------
 let servers = [];
 async function loadServers() {
+  loadOneConnect();
   try {
     const j = await api('/servers');
     servers = j.data.servers || j.data || [];
@@ -426,7 +428,8 @@ $('savePostBtn').onclick = async () => {
 const AD_FIELDS = ['primary_network', 'show_ads', 'ad_frequency',
   'admob_app_id', 'admob_banner_id', 'admob_interstitial_id', 'admob_rewarded_id',
   'facebook_app_id', 'facebook_banner_id', 'facebook_interstitial_id', 'facebook_rewarded_id',
-  'unity_game_id', 'unity_banner_id', 'unity_interstitial_id', 'unity_rewarded_id'];
+  'unity_game_id', 'unity_banner_id', 'unity_interstitial_id', 'unity_rewarded_id',
+  'applovin_sdk_key', 'applovin_banner_id', 'applovin_interstitial_id', 'applovin_rewarded_id'];
 async function loadAds() {
   try {
     const j = await api('/ads/admin/config');
@@ -487,6 +490,185 @@ document.addEventListener('click', async e => {
     catch (err) { showMsg('Delete failed: ' + err.message, false); }
   }
 });
+
+// ---------- plans ----------
+async function loadPlans() {
+  try {
+    const j = await api('/admin/payment-config');
+    const d = j.data || {};
+    $('plan_monthly_price').value = d.monthly_price != null ? d.monthly_price : '';
+    $('plan_yearly_price').value = d.yearly_price != null ? d.yearly_price : '';
+    $('plan_currency').value = d.currency || 'MMK';
+    $('plan_kpay_enabled').checked = d.kpay_enabled !== false;
+    $('plan_wave_enabled').checked = d.wave_enabled !== false;
+    $('plan_google_play_enabled').checked = d.google_play_enabled !== false;
+  } catch (err) { showMsg('Plans: ' + err.message, false); }
+}
+$('savePlansBtn').onclick = async () => {
+  try {
+    await api('/admin/payment-config', 'PUT', {
+      monthly_price: parseFloat($('plan_monthly_price').value) || 0,
+      yearly_price: parseFloat($('plan_yearly_price').value) || 0,
+      currency: $('plan_currency').value.trim() || 'MMK',
+      kpay_enabled: $('plan_kpay_enabled').checked,
+      wave_enabled: $('plan_wave_enabled').checked,
+      google_play_enabled: $('plan_google_play_enabled').checked
+    });
+    showMsg('Plans saved', true);
+  } catch (err) { showMsg('Save failed: ' + err.message, false); }
+};
+
+// ---------- rewards ----------
+const REWARD_FIELDS = [
+  'daily_checkin_points', 'watch_ad_points',
+  'wheel_min_points', 'wheel_max_points',
+  'share_points', 'rate_points', 'invite_points',
+  'redeem_points_required', 'redeem_premium_days'
+];
+async function loadRewardConfigTab() {
+  try {
+    const j = await api('/admin/reward-config');
+    const d = j.data || {};
+    REWARD_FIELDS.forEach(f => { $('rw_' + f).value = d[f] != null ? d[f] : ''; });
+  } catch (err) { showMsg('Rewards: ' + err.message, false); }
+  try {
+    const j = await api('/admin/reward-stats');
+    const d = j.data || {};
+    $('rewardStats').textContent =
+      'Total points awarded: ' + (d.totalAwarded != null ? d.totalAwarded : '–') +
+      '  •  Reward transactions: ' + (d.count != null ? d.count : '–');
+  } catch (err) { $('rewardStats').textContent = 'Stats unavailable: ' + err.message; }
+}
+$('saveRewardsBtn').onclick = async () => {
+  try {
+    const body = {};
+    REWARD_FIELDS.forEach(f => {
+      const v = parseInt($('rw_' + f).value, 10);
+      if (!Number.isNaN(v)) body[f] = v;
+    });
+    await api('/admin/reward-config', 'PUT', body);
+    showMsg('Reward config saved', true);
+  } catch (err) { showMsg('Save failed: ' + err.message, false); }
+};
+
+// ---------- leaderboard ----------
+async function loadLeaderboardTab() {
+  const tb = $('leaderboardRows');
+  try {
+    const j = await api('/leaderboard/points');
+    const rows = j.data || [];
+    tb.innerHTML = rows.length ? rows.map((e, i) =>
+      '<tr><td>' + (e.rank || (i + 1)) + '</td><td>' + esc(e.name) + '</td><td>' +
+      (e.points != null ? e.points : 0) + '</td></tr>').join('')
+      : '<tr><td colspan="3" style="text-align:center;color:#aaa">No users yet</td></tr>';
+  } catch (err) {
+    tb.innerHTML = '<tr><td colspan="3" style="color:#c62828">' + esc(err.message) + '</td></tr>';
+  }
+}
+$('reloadLeaderboardBtn').onclick = loadLeaderboardTab;
+
+// ---------- settings (app config) ----------
+const CFG_FIELDS = [
+  'maintenance_mode', 'maintenance_message', 'min_app_version',
+  'latest_app_version', 'update_url', 'app_name', 'support_email',
+  'privacy_policy_url', 'terms_of_service_url', 'support_url',
+  'banner_image_url', 'free_server_limit',
+  'push_notifications_enabled', 'update_notifications_enabled',
+  'promo_notifications_enabled'
+];
+const CFG_BOOL_FIELDS = [
+  'maintenance_mode', 'push_notifications_enabled',
+  'update_notifications_enabled', 'promo_notifications_enabled'
+];
+async function loadSettings() {
+  try {
+    const j = await api('/admin/app-config');
+    const c = j.data || {};
+    CFG_FIELDS.forEach(f => {
+      const el = $('cfg_' + f);
+      if (!el) return;
+      if (CFG_BOOL_FIELDS.indexOf(f) !== -1) el.checked = !!c[f];
+      else el.value = c[f] != null ? c[f] : '';
+    });
+  } catch (err) { showMsg('App settings: ' + err.message, false); }
+  loadServerInfo();
+}
+$('saveAppCfgBtn').onclick = async () => {
+  const body = {};
+  CFG_FIELDS.forEach(f => {
+    const el = $('cfg_' + f);
+    if (!el) return;
+    if (CFG_BOOL_FIELDS.indexOf(f) !== -1) body[f] = el.checked;
+    else if (f === 'free_server_limit') body[f] = el.value ? parseInt(el.value, 10) : null;
+    else body[f] = el.value.trim();
+  });
+  try {
+    await api('/admin/app-config', 'PUT', body);
+    showMsg('App settings saved', true);
+  } catch (err) { showMsg('Save failed: ' + err.message, false); }
+};
+
+// ---------- server info (read-only, bottom of settings) ----------
+async function loadServerInfo() {
+  const el = $('appInfo');
+  try {
+    const r = await fetch(location.origin + '/health');
+    const d = await r.json().catch(() => ({}));
+    el.innerHTML =
+      '<div class="kv"><b>API base:</b> ' + esc(API) + '</div>' +
+      '<div class="kv"><b>Status:</b> ' + esc(d.status || '–') + '</div>' +
+      '<div class="kv"><b>Version:</b> ' + esc(d.version || '–') + '</div>' +
+      '<div class="kv"><b>Environment:</b> ' + esc(d.environment || '–') + '</div>' +
+      '<div class="kv"><b>Uptime:</b> ' + esc(d.uptime != null ? Math.round(d.uptime) + 's' : '–') + '</div>' +
+      '<div class="kv"><b>Database:</b> ' + esc(d.database || '–') + '</div>';
+  } catch (err) {
+    el.textContent = 'Health check failed: ' + err.message;
+  }
+}
+
+// ---------- oneconnect ----------
+async function loadOneConnect() {
+  const line = $('ocStatusLine');
+  try {
+    const j = await api('/oneconnect/config');
+    const d = j.data || {};
+    if (!d || !d.id) {
+      line.textContent = 'Not configured yet.';
+      return;
+    }
+    $('oc_api_url').value = d.api_url || '';
+    // Don't echo the key back into the field; blank = keep existing on save.
+    $('oc_api_key').value = '';
+    $('oc_sync_interval').value = d.sync_interval != null ? d.sync_interval : '';
+    $('oc_auto_sync').checked = !!d.auto_sync;
+    line.textContent = 'Last sync: ' + (d.last_sync ? fmtDate(d.last_sync) : 'never') +
+      '  •  Status: ' + (d.status || '–');
+  } catch (err) { line.textContent = 'OneConnect: ' + err.message; }
+}
+$('saveOcBtn').onclick = async () => {
+  try {
+    const body = {
+      auto_sync: $('oc_auto_sync').checked,
+      sync_interval: parseInt($('oc_sync_interval').value, 10) || 60
+    };
+    const url = $('oc_api_url').value.trim();
+    const key = $('oc_api_key').value;
+    if (url) body.api_url = url;
+    if (key) body.api_key = key;
+    await api('/oneconnect/config', 'PUT', body);
+    showMsg('OneConnect config saved', true);
+    loadOneConnect();
+  } catch (err) { showMsg('Save failed: ' + err.message, false); }
+};
+$('syncOcBtn').onclick = async () => {
+  if (!confirm('Sync servers from OneConnect now?')) return;
+  try {
+    const j = await api('/oneconnect/sync', 'POST', {});
+    showMsg(j.message || 'Sync started', true);
+    loadOneConnect();
+    loadServers();
+  } catch (err) { showMsg('Sync failed: ' + err.message, false); }
+};
 
 // auto-login if token saved
 if (token) enterApp();
